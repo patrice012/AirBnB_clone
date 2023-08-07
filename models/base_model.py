@@ -23,7 +23,7 @@ class BaseModel:
 
     def __init__(self):
         """
-        Init the new instance
+        Init the new instance or object
 
         Attributes:
             id(str): uuid when an instance is created

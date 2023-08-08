@@ -39,13 +39,20 @@ class TestBaseModelClassDocstrings(unittest.TestCase):
 class TestBaseClass(unittest.TestCase):
     """Tests BaseClass"""
 
+    def setUp(self):
+        """Provide initial object for most tests"""
+        self.base = BaseModel()
+
+    def tearDown(self):
+        """Remove unused varaiables"""
+        del self.base
+
     def test_instantiation(self):
         """Tests BaseModel instantion"""
-        base = BaseModel()
         output = "<class 'models.base_model.BaseModel'>"
-        self.assertTrue(str(type(base)), output)
-        self.assertIsInstance(base, BaseModel)
-        self.assertTrue(issubclass(type(base), BaseModel))
+        self.assertTrue(str(type(self.base)), output)
+        self.assertIsInstance(self.base, BaseModel)
+        self.assertTrue(issubclass(type(self.base), BaseModel))
 
     def test_instantiation_with_args(self):
         """Tests __init__ with argument"""
@@ -55,13 +62,12 @@ class TestBaseClass(unittest.TestCase):
 
     def test_class_attributes_access(self):
         """Tests attributes id, create_at, update_at"""
-        base = BaseModel()
         attrs = [
-        (base, 'id'),
-        (base, 'created_at'),
-        (base, 'updated_at'),
-        (base, 'save'),
-        (base, 'to_dict')
+        (self.base, 'id'),
+        (self.base, 'created_at'),
+        (self.base, 'updated_at'),
+        (self.base, 'save'),
+        (self.base, 'to_dict')
         ]
         for ele in attrs:
             with self.subTest():
@@ -69,10 +75,9 @@ class TestBaseClass(unittest.TestCase):
 
     def test_class_date_attributes_type(self):
         """Tests attributes create_at, update_at types"""
-        base = BaseModel()
         attrs = [
-        (base.created_at, datetime),
-        (base.updated_at, datetime),
+        (self.base.created_at, datetime),
+        (self.base.updated_at, datetime),
         ]
         for ele in attrs:
             with self.subTest():
@@ -80,8 +85,7 @@ class TestBaseClass(unittest.TestCase):
 
     def test_id_type(self):
         """Test class id type == string"""
-        base = BaseModel()
-        self.assertIsInstance(base.id, str)
+        self.assertIsInstance(self.base.id, str)
 
     def test_unique_id(self):
         """Confirm instances id are unique"""
@@ -90,6 +94,49 @@ class TestBaseClass(unittest.TestCase):
         for i in range(max_number):
             list_id.append(BaseModel().id)
         self.assertEqual(len(set(list_id)), max_number)
+
+    def test_str_method_output(self):
+        """Test custom str method behavior"""
+        base = self.base
+        output = "[{}] ({}) <{}>".format(type(base).__name__, base.id, base.__dict__)
+        self.assertEqual(str(base), output)
+        self.assertEqual(base.__str__(), output)
+
+    def test_save_method(self):
+        """
+        Test save method
+        update of updated_at instance attr
+        """
+        base = self.base
+        date_1 = base.updated_at
+        base.save()
+        self.assertNotEqual(base.updated_at, date_1)
+
+    def test_save_method_multiple_times(self):
+        """
+        Test save method
+        update of updated_at instance attr
+        """
+        base = BaseModel()
+        list_date = [base.updated_at]
+        max_number = 500
+        for i in range(1, max_number):
+            base.save()
+            list_date.append(base.updated_at)
+        self.assertEqual(len(set(list_date)), max_number)
+
+
+
+
+    def test_to_dict(self):
+        """
+        Test instance method to_dict
+        """
+        base_to_dict = self.base.to_dict()
+        self.assertEqual(base_to_dict["__class__"], "BaseModel")
+        self.assertEqual(type(base_to_dict["created_at"]), str)
+        self.assertEqual(type(base_to_dict["updated_at"]), str)
+
 
 
 

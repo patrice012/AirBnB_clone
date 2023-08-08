@@ -21,7 +21,7 @@ class BaseModel:
         to_dict(self)
     """
 
-    def __init__(self):
+    def __init__(self, *args, **kwargs):
         """
         Init the new instance or object
 
@@ -31,9 +31,16 @@ class BaseModel:
             updated_at(datetime):  current datetime when an instance is created
                 and it will be updated every time you change your object
         """
-        self.id = str(uuid4())
-        self.created_at = datetime.now()
-        self.updated_at = datetime.now()
+        if kwargs:
+            for key in kwargs:
+                if key != '__class__':
+                    if key == 'created_at' or key == 'updated_at':
+                        self.key = datetime.strptime(value, "%Y-%m-%dT%H:%M:%S.%f")
+                    self.key = kwargs.get(key)
+        else:
+            self.id = str(uuid4())
+            self.created_at = datetime.now()
+            self.updated_at = datetime.now()
 
     def __str__(self):
         """

@@ -32,7 +32,11 @@ class TestBaseModelClassDocstrings(unittest.TestCase):
 
 
 class TestBaseClass(unittest.TestCase):
-    pass
+    
+
+    def test_init_object(self):
+        base = BaseModel()
+        self.assertTrue(base.id)
 
 
 

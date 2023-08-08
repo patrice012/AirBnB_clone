@@ -14,24 +14,24 @@ class TestBaseModelClassDocstrings(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         """Add attributs to Test class"""
-        _cls = BaseModel()
+        base = BaseModel()
         docs_list = []
-        docs_list.append(_cls.__module__.__doc__)
-        docs_list.append(_cls.__class__.__doc__)
-        docs_list.append(_cls.__str__.__doc__)
-        docs_list.append(_cls.__init__.__doc__)
-        docs_list.append(_cls.save.__doc__)
-        docs_list.append(_cls.to_dict.__doc__)
-        cls.docs_list = docs_list
+        docs_list.append(base.__module__.__doc__)
+        docs_list.append(base.__class__.__doc__)
+        docs_list.append(base.__str__.__doc__)
+        docs_list.append(base.__init__.__doc__)
+        docs_list.append(base.save.__doc__)
+        docs_list.append(base.to_dict.__doc__)
+        cls.docstrings_list = docs_list
 
     @classmethod
     def tearDownClass(cls):
         """Remove unused attributs from Test class"""
-        del cls.docs_list
+        del cls.docstrings_list
 
     def test_module_docstring(self):
         """Test docstring"""
-        for docstring in self.__class__.docs_list:
+        for docstring in self.__class__.docstrings_list:
             with self.subTest(docstring=docstring):
                 self.assertTrue(len(docstring) > 10)
 
@@ -42,18 +42,18 @@ class TestBaseClass(unittest.TestCase):
     def test_instantiation(self):
         """Tests BaseModel instantion"""
         base = BaseModel()
-        self.assertTrue(str(type(base)),
-                         "<class 'models.base_model.BaseModel'>")
+        output = "<class 'models.base_model.BaseModel'>"
+        self.assertTrue(str(type(base)), output)
         self.assertIsInstance(base, BaseModel)
-        self.assertTrue(issubclass(type(base)), BaseModel)
+        self.assertTrue(issubclass(type(base), BaseModel))
 
     def test_instantiation_with_args(self):
         """Tests __init__ with argument"""
         msg = 'BaseModel.__init__() takes 1 positional argument but 4 were given'
-        with self.assertRaises(TypeEror, msg=msg):
+        with self.assertRaises(TypeError, msg=msg):
             base = BaseModel('1458-876-668', datetime.now(), datetime.now())
 
-    def test_class_attributes(self):
+    def test_class_attributes_access(self):
         """Tests attributes id, create_at, update_at"""
         base = BaseModel()
         attrs = [
@@ -65,7 +65,32 @@ class TestBaseClass(unittest.TestCase):
         ]
         for ele in attrs:
             with self.subTest():
-                self.assertTrue(hasattr(ele[0]), ele[1])
+                self.assertTrue(hasattr(ele[0], ele[1]))
+
+    def test_class_date_attributes_type(self):
+        """Tests attributes create_at, update_at types"""
+        base = BaseModel()
+        attrs = [
+        (base.created_at, datetime),
+        (base.updated_at, datetime),
+        ]
+        for ele in attrs:
+            with self.subTest():
+                self.assertIsInstance(ele[0], ele[1])
+
+    def test_id_type(self):
+        """Test class id type == string"""
+        base = BaseModel()
+        self.assertIsInstance(base.id, str)
+
+    def test_unique_id(self):
+        """Confirm instances id are unique"""
+        list_id = []
+        max_number = 200
+        for i in range(max_number):
+            list_id.append(BaseModel().id)
+        self.assertEqual(len(set(list_id)), max_number)
+
 
 
 

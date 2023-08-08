@@ -39,7 +39,7 @@ class BaseModel:
         """
         Return the string representation of the instance
 
-        Format: [<class name>] (<self.id>) <self.__dict__>
+        Format: [<class name>] (<instance.id>) <instance.__dict__>
         """
         _cls = self.__class__.__name__
         return "[{}] ({}) <{}>".format(_cls, self.id, self.__dict__)
@@ -47,7 +47,7 @@ class BaseModel:
     def save(self):
         """
         Updates the public instance attribute
-        updated_at with the current datetime
+        <<updated_at>> with the current datetime
         """
         self.updated_at = datetime.now()
 

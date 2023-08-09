@@ -8,7 +8,7 @@ from datetime import datetime
 from models.base_model import BaseModel
 
 
-class TestBaseModelClassDocstrings(unittest.TestCase):
+class TestBaseModelDocstrings(unittest.TestCase):
     """Tests Docstrings"""
 
     @classmethod
@@ -29,7 +29,7 @@ class TestBaseModelClassDocstrings(unittest.TestCase):
         """Remove unused attributs from Test class"""
         del cls.docstrings_list
 
-    def test_module_docstring(self):
+    def test_BaseModel_docstring(self):
         """Test docstring"""
         for docstring in self.__class__.docstrings_list:
             with self.subTest(docstring=docstring):

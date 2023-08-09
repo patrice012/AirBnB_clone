@@ -4,8 +4,26 @@ Unit test for BaseModel class
 """
 
 import unittest
+import os
 from datetime import datetime
 from models.base_model import BaseModel
+from models.engine.file_storage import FileStorage
+
+
+def setUpModule():
+    """Change json file for testing to avoid side effet"""
+    FileStorage._FileStorage__file_path = "test_base_model.json"
+
+
+def tearDownModule():
+    """Change json file to the default"""
+    try:
+        file = FileStorage._FileStorage__file_path
+        if os.path.isfile(file):
+            os.remove(file)
+    except FileNotFoundError:
+        pass
+    FileStorage._FileStorage__file_path = "storage_file.json"
 
 
 class TestBaseModelDocstrings(unittest.TestCase):
@@ -48,6 +66,14 @@ class TestBaseClass(unittest.TestCase):
     def tearDown(self):
         """Remove unused varaiables"""
         del self.base
+        self.clearStorageSystem()
+
+    def clearStorageSystem(self):
+        """Resets FileStorage data."""
+        FileStorage._FileStorage__objects = {}
+
+        if os.path.isfile(FileStorage._FileStorage__file_path):
+            os.remove(FileStorage._FileStorage__file_path)
 
     def test_instantiation(self):
         """Tests BaseModel instantion"""
@@ -56,7 +82,7 @@ class TestBaseClass(unittest.TestCase):
         self.assertIsInstance(self.base, BaseModel)
         self.assertTrue(issubclass(type(self.base), BaseModel))
 
-    @unittest.skipIf(RUN_WITH_ARGS, "__init__ has now arg and kwargs")
+    @unittest.skipIf(RUN_WITH_ARGS, "__init__ has now args and kwargs")
     def test_instantiation_with_args(self):
         """Tests __init__ with argument"""
         m = "BaseModel.__init__() takes 1 positional argument but 4 were given"
@@ -64,7 +90,10 @@ class TestBaseClass(unittest.TestCase):
             base = BaseModel("1458-876-668", datetime.now(), datetime.now())
 
     def test_class_attributes_access(self):
-        """Tests attributes id, create_at, update_at"""
+        """
+        Tests attributes id, create_at, update_at
+        and method save and to_dict
+        """
         attrs = [
             (self.base, "id"),
             (self.base, "created_at"),
@@ -121,6 +150,7 @@ class TestBaseClass(unittest.TestCase):
         Test save method
         update of updated_at instance attr
         """
+        self.clearStorageSystem()
         base = BaseModel()
         list_date = [base.updated_at]
         max_number = 500
@@ -141,7 +171,7 @@ class TestBaseClass(unittest.TestCase):
     # Test for __init__ with args and kwargs
     def test_init_with_many_args(self):
         """Tests instantiation with many args"""
-        # self.clearStorageSystem()
+        self.clearStorageSystem()
         base_1 = BaseModel([i for i in range(1000)])
         base_2 = BaseModel(set([i for i in range(1000)]))
         base_3 = BaseModel(tuple([i for i in range(1000)]))
@@ -154,7 +184,7 @@ class TestBaseClass(unittest.TestCase):
 
     def test_init_with_invalid_keys_using_kwargs(self):
         """Tests instantiation with many kwargs"""
-        # self.clearStorageSystem()
+        self.clearStorageSystem()
         base_1 = BaseModel(a=1, b=2, c=3, d=4, e=5, f=6, g=7, h=8)
         base_2 = BaseModel(**{"a": 1, "b": 2, "c": 3, "d": 4})
         output = "<class 'models.base_model.BaseModel'>"
@@ -166,7 +196,7 @@ class TestBaseClass(unittest.TestCase):
 
     def test_init_with_valid_keys_using_kwargs(self):
         """Tests instantiation with valid kwargs"""
-        # self.clearStorageSystem()
+        self.clearStorageSystem()
         data = {
             "id": "56d43177-cc5f-4d6c-a0c1-e167f8c27337",
             "created_at": "2017-09-28T21:03:54.052298",
@@ -180,7 +210,7 @@ class TestBaseClass(unittest.TestCase):
 
     def test_init_with_kwargs_and_adding_extra_keys(self):
         """Tests instantiation with many extrat keys"""
-        # self.clearStorageSystem()
+        self.clearStorageSystem()
         data = {
             "id": "56d43177-cc5f-4d6c-a0c1-e167f8c27337",
             "created_at": "2017-09-28T21:03:54.052298",
@@ -198,6 +228,7 @@ class TestBaseClass(unittest.TestCase):
 
     def test_init_from_instance_dict(self):
         """Tests init from dictionary"""
+        self.clearStorageSystem()
         base = BaseModel()
         base_dict = base.to_dict()
         base_2 = BaseModel(**base_dict)

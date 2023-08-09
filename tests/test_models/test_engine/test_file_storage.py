@@ -10,11 +10,19 @@ from models.base_model import BaseModel
 
 def setUpModule():
     """Change json file for testing to avoid side effet"""
-    FileStorage._FileStorage__file_path = "test.json"
+    FileStorage._FileStorage__file_path = "test_file_storage.json"
 
 
 def tearDownModule():
     """Change json file to the default"""
+    import os
+
+    try:
+        file = FileStorage._FileStorage__file_path
+        if os.path.isfile(file):
+            os.remove(file)
+    except FileNotFoundError:
+        pass
     FileStorage._FileStorage__file_path = "storage_file.json"
 
 
@@ -54,13 +62,7 @@ class TestFileStorage(unittest.TestCase):
     @classmethod
     def tearDownClass(cls):
         """Clean directory"""
-        import os
-        try:
-            file = FileStorage._FileStorage__file_path
-            if os.path.isfile(file):
-                os.remove(file)
-        except FileNotFoundError:
-            pass
+        pass
 
     def test_instances(self):
         """Test Instantiation"""

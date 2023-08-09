@@ -56,21 +56,21 @@ class TestBaseClass(unittest.TestCase):
         self.assertIsInstance(self.base, BaseModel)
         self.assertTrue(issubclass(type(self.base), BaseModel))
 
-    @unittest.skipIf(RUN_WITH_ARGS, '__init__ has now arg and kwargs')
+    @unittest.skipIf(RUN_WITH_ARGS, "__init__ has now arg and kwargs")
     def test_instantiation_with_args(self):
         """Tests __init__ with argument"""
-        msg = 'BaseModel.__init__() takes 1 positional argument but 4 were given'
-        with self.assertRaises(TypeError, msg=msg):
-            base = BaseModel('1458-876-668', datetime.now(), datetime.now())
+        m = "BaseModel.__init__() takes 1 positional argument but 4 were given"
+        with self.assertRaises(TypeError, msg=m):
+            base = BaseModel("1458-876-668", datetime.now(), datetime.now())
 
     def test_class_attributes_access(self):
         """Tests attributes id, create_at, update_at"""
         attrs = [
-        (self.base, 'id'),
-        (self.base, 'created_at'),
-        (self.base, 'updated_at'),
-        (self.base, 'save'),
-        (self.base, 'to_dict')
+            (self.base, "id"),
+            (self.base, "created_at"),
+            (self.base, "updated_at"),
+            (self.base, "save"),
+            (self.base, "to_dict"),
         ]
         for ele in attrs:
             with self.subTest():
@@ -79,8 +79,8 @@ class TestBaseClass(unittest.TestCase):
     def test_class_date_attributes_type(self):
         """Tests attributes create_at, update_at types"""
         attrs = [
-        (self.base.created_at, datetime),
-        (self.base.updated_at, datetime),
+            (self.base.created_at, datetime),
+            (self.base.updated_at, datetime),
         ]
         for ele in attrs:
             with self.subTest():
@@ -101,7 +101,8 @@ class TestBaseClass(unittest.TestCase):
     def test_str_method_output(self):
         """Test custom str method behavior"""
         base = self.base
-        output = "[{}] ({}) <{}>".format(type(base).__name__, base.id, base.__dict__)
+        name = type(base).__name__
+        output = "[{}] ({}) <{}>".format(name, base.id, base.__dict__)
         self.assertEqual(str(base), output)
         self.assertEqual(base.__str__(), output)
 
@@ -147,7 +148,7 @@ class TestBaseClass(unittest.TestCase):
         output = "<class 'models.base_model.BaseModel'>"
         list_obj = [(base_1,), (base_2,), (base_3,)]
         for obj in list_obj:
-            with self.subTest():  
+            with self.subTest():
                 self.assertEqual(str(type(obj[0])), output)
                 self.assertIsInstance(obj[0], BaseModel)
 
@@ -155,34 +156,47 @@ class TestBaseClass(unittest.TestCase):
         """Tests instantiation with many kwargs"""
         # self.clearStorageSystem()
         base_1 = BaseModel(a=1, b=2, c=3, d=4, e=5, f=6, g=7, h=8)
-        base_2 = BaseModel(**{'a': 1, 'b': 2, 'c': 3, 'd': 4})
+        base_2 = BaseModel(**{"a": 1, "b": 2, "c": 3, "d": 4})
         output = "<class 'models.base_model.BaseModel'>"
         list_obj = [(base_1,), (base_2,)]
         for obj in list_obj:
-            with self.subTest():  
+            with self.subTest():
                 self.assertEqual(str(type(obj[0])), output)
                 self.assertIsInstance(obj[0], BaseModel)
 
     def test_init_with_valid_keys_using_kwargs(self):
         """Tests instantiation with valid kwargs"""
         # self.clearStorageSystem()
-        data = {'id': '56d43177-cc5f-4d6c-a0c1-e167f8c27337', 'created_at': '2017-09-28T21:03:54.052298', '__class__': 'BaseModel', 'updated_at': '2017-09-28T21:03:54.052302'}
+        data = {
+            "id": "56d43177-cc5f-4d6c-a0c1-e167f8c27337",
+            "created_at": "2017-09-28T21:03:54.052298",
+            "__class__": "BaseModel",
+            "updated_at": "2017-09-28T21:03:54.052302",
+        }
         base = BaseModel(**data)
-        output = "<class 'models.base_model.BaseModel'>" 
+        output = "<class 'models.base_model.BaseModel'>"
         self.assertEqual(str(type(base)), output)
         self.assertIsInstance(base, BaseModel)
-
 
     def test_init_with_kwargs_and_adding_extra_keys(self):
         """Tests instantiation with many extrat keys"""
         # self.clearStorageSystem()
-        data = {'id': '56d43177-cc5f-4d6c-a0c1-e167f8c27337', 'created_at': '2017-09-28T21:03:54.052298', '__class__': 'BaseModel', 'my_number': 89, 'updated_at': '2017-09-28T21:03:54.052302', 'name': 'My_First_Model', 'valid':True, 'format': "Dict"}
+        data = {
+            "id": "56d43177-cc5f-4d6c-a0c1-e167f8c27337",
+            "created_at": "2017-09-28T21:03:54.052298",
+            "__class__": "BaseModel",
+            "my_number": 89,
+            "updated_at": "2017-09-28T21:03:54.052302",
+            "name": "My_First_Model",
+            "valid": True,
+            "format": "Dict",
+        }
         base = BaseModel(**data)
         for key in data.keys():
-            if key != '__class__':
+            if key != "__class__":
                 self.assertTrue(hasattr(base, key))
 
-    def test_init_from_dict(self):
+    def test_init_from_instance_dict(self):
         """Tests init from dictionary"""
         base = BaseModel()
         base_dict = base.to_dict()
@@ -193,5 +207,5 @@ class TestBaseClass(unittest.TestCase):
         self.assertEqual(base.__dict__, base_2.__dict__)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main(verbosity=2)

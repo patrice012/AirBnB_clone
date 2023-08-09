@@ -44,8 +44,8 @@ class FileStorage:
         Usage:
             Sets in __objects the obj with key <obj class name>.id
         """
-        _id = f"{obj.__class__.__name__}.{obj.id}"
-        setattr(FileStorage.__objects, _id, obj)
+        _id = "{}.{}".format(obj.__class__.__name__, obj.id)
+        FileStorage.__objects[_id] = obj
 
     def save(self):
         """
@@ -55,9 +55,35 @@ class FileStorage:
         """
         path = FileStorage.__file_path
         obj = FileStorage.__objects.items()
-        dict_objects = {key: value.to_dict() for key, value in obj}
         with open(path, "w") as file:
+            dict_objects = {key: value.to_dict() for key, value in obj}
             json.dump(dict_objects, file)
+
+    @staticmethod
+    def object_classes():
+        """
+        Helper function
+        map class names to python class
+        """
+        from ..base_model import BaseModel
+
+        classes = {"BaseModel": BaseModel}
+
+        return classes
+
+    @staticmethod
+    def get_object_class(string_cls):
+        """
+        Select object class base on `string_cls`
+        Args:
+            string_cls(str): string name of the instance class
+        Return:
+            Instance's Class
+        """
+        if type(string_cls) is not str or string_cls is None:
+            raise TypeError(f"{string_cls} must be a string object")
+        classes = FileStorage.object_classes()
+        return classes[string_cls]
 
     def reload(self):
         """
@@ -71,8 +97,7 @@ class FileStorage:
         if os.path.isfile(path):
             with open(path, "r") as file:
                 storage_dict = json.load(file)
-                storage_dict = {
-                    k: self.classes()[v["__class__"]](**v)
-                    for k, v in storage_dict.items()
-                }
+                for key, value in storage_dict.items():
+                    Klass = self.get_object_class(value.get("__class__", None))
+                    storage_dict[key] = Klass(**value)
                 FileStorage.__objects = storage_dict

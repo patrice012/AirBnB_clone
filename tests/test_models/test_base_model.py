@@ -5,24 +5,23 @@ Unit test for BaseModel class
 
 import unittest
 import os
+from time import sleep
 from datetime import datetime
+
 from models.base_model import BaseModel
 from models.engine.file_storage import FileStorage
+from tests.helper import remove_file
 
 
 def setUpModule():
-    """Change json file for testing to avoid side effet"""
+    """Change json file for testing to avoid side effect"""
     FileStorage._FileStorage__file_path = "test_base_model.json"
 
 
 def tearDownModule():
     """Change json file to the default"""
-    try:
-        file = FileStorage._FileStorage__file_path
-        if os.path.isfile(file):
-            os.remove(file)
-    except FileNotFoundError:
-        pass
+    file = FileStorage._FileStorage__file_path
+    remove_file(file)
     FileStorage._FileStorage__file_path = "storage_file.json"
 
 
@@ -71,9 +70,8 @@ class TestBaseClass(unittest.TestCase):
     def clearStorageSystem(self):
         """Resets FileStorage data."""
         FileStorage._FileStorage__objects = {}
-
-        if os.path.isfile(FileStorage._FileStorage__file_path):
-            os.remove(FileStorage._FileStorage__file_path)
+        file = FileStorage._FileStorage__file_path
+        remove_file(file)
 
     def test_instantiation(self):
         """Tests BaseModel instantion"""
@@ -159,6 +157,42 @@ class TestBaseClass(unittest.TestCase):
             list_date.append(base.updated_at)
         self.assertEqual(len(set(list_date)), max_number)
 
+    def test_that_save_method_updates_updated_at_attr(self):
+        """
+        Checks that save() method updates 'updated_at' attribute
+        """
+        base = BaseModel()
+        sleep(0.02)
+        temp_update = base.updated_at
+        base.save()
+        self.assertLess(temp_update, base.updated_at)
+
+    def test_that_save_can_update_two_or_more_times(self):
+        """
+        Tests that the save method updates 'updated_at' two times
+        """
+        base = BaseModel()
+        sleep(0.02)
+        temp_update = base.updated_at
+        base.save()
+        sleep(0.02)
+        temp1_update = base.updated_at
+        self.assertLess(temp_update, temp1_update)
+        sleep(0.01)
+        base.save()
+        self.assertLess(temp1_update, base.updated_at)
+
+    def test_save_update_file(self):
+        """
+        Tests if file is updated when the 'save' is called
+        """
+        base = BaseModel()
+        base.save()
+        bid = "BaseModel.{}".format(base.id)
+        file = FileStorage._FileStorage__file_path
+        with open(file, encoding="utf-8") as f:
+            self.assertIn(bid, f.read())
+
     def test_to_dict(self):
         """
         Test instance method to_dict
@@ -167,6 +201,58 @@ class TestBaseClass(unittest.TestCase):
         self.assertEqual(base_to_dict["__class__"], "BaseModel")
         self.assertEqual(type(base_to_dict["created_at"]), str)
         self.assertEqual(type(base_to_dict["updated_at"]), str)
+
+    def test_that_to_dict_contains_correct_keys(self):
+        """
+        Checks whether to_dict() returns the expected key
+        """
+        b_dict = BaseModel().to_dict()
+        attrs = ("id", "created_at", "updated_at", "__class__")
+        for attr in attrs:
+            with self.subTest():
+                self.assertIn(attr, b_dict)
+
+    def test_to_dict_contains_added_attributes(self):
+        """
+        Checks that new attributes are also returned by to_dict()
+        """
+        base = BaseModel()
+        attrs = ["id", "created_at", "updated_at", "__class__"]
+        base.name = "Firdaus"
+        base.email = "firduas@gmail.com"
+        attrs.extend(["name", "email"])
+        for attr in attrs:
+            with self.subTest():
+                self.assertIn(attr, base.to_dict())
+
+    def test_to_dict_output(self):
+        """
+        Checks the output returned by to_dict()
+        """
+        base = BaseModel()
+        dt = datetime.now()
+        base.id = "12345"
+        base.created_at = base.updated_at = dt
+        test_dict = {
+            "id": "12345",
+            "created_at": dt.isoformat(),
+            "updated_at": dt.isoformat(),
+            "__class__": "BaseModel",
+        }
+        self.assertDictEqual(test_dict, base.to_dict())
+
+    def test_to_dict_with_args(self):
+        """
+        Checks that TypeError is returned when argument is passed to to_dict()
+        """
+        base = BaseModel()
+        with self.assertRaises(TypeError):
+            base.to_dict(None)
+
+    def test_to_dict_not_dunder_dict(self):
+        """Checks that to_dict() is a dict object not equal to __dict__"""
+        bm = BaseModel()
+        self.assertNotEqual(bm.to_dict(), bm.__dict__)
 
     # Test for __init__ with args and kwargs
     def test_init_with_many_args(self):
@@ -185,8 +271,8 @@ class TestBaseClass(unittest.TestCase):
     def test_init_with_invalid_keys_using_kwargs(self):
         """Tests instantiation with many kwargs"""
         self.clearStorageSystem()
-        base_1 = BaseModel(a=1, b=2, c=3, d=4, e=5, f=6, g=7, h=8)
-        base_2 = BaseModel(**{"a": 1, "b": 2, "c": 3, "d": 4})
+        base_1 = BaseModel(a=1, base=2, c=3, d=4, e=5, f=6, g=7, h=8)
+        base_2 = BaseModel(**{"a": 1, "base": 2, "c": 3, "d": 4})
         output = "<class 'models.base_model.BaseModel'>"
         list_obj = [(base_1,), (base_2,)]
         for obj in list_obj:
@@ -223,8 +309,9 @@ class TestBaseClass(unittest.TestCase):
         }
         base = BaseModel(**data)
         for key in data.keys():
-            if key != "__class__":
-                self.assertTrue(hasattr(base, key))
+            with self.subTest():
+                if key != "__class__":
+                    self.assertTrue(hasattr(base, key))
 
     def test_init_from_instance_dict(self):
         """Tests init from dictionary"""

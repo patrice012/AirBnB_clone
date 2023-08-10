@@ -4,12 +4,14 @@ Test File Storage
 """
 
 import unittest
+
 from models.engine.file_storage import FileStorage
 from models.base_model import BaseModel
+from tests.helper import remove_file
 
 
 def setUpModule():
-    """Change json file for testing to avoid side effet"""
+    """Change json file for testing to avoid side effect"""
     FileStorage._FileStorage__file_path = "test_file_storage.json"
 
 
@@ -17,12 +19,8 @@ def tearDownModule():
     """Change json file to the default"""
     import os
 
-    try:
-        file = FileStorage._FileStorage__file_path
-        if os.path.isfile(file):
-            os.remove(file)
-    except FileNotFoundError:
-        pass
+    file = FileStorage._FileStorage__file_path
+    remove_file(file)
     FileStorage._FileStorage__file_path = "storage_file.json"
 
 

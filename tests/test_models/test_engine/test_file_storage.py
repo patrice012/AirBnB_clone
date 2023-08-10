@@ -7,7 +7,7 @@ import unittest
 
 from models.engine.file_storage import FileStorage
 from models.base_model import BaseModel
-from tests.helper import remove_file
+from tests.helper import remove_file, DEBUG
 
 
 def setUpModule():
@@ -20,7 +20,8 @@ def tearDownModule():
     import os
 
     file = FileStorage._FileStorage__file_path
-    remove_file(file)
+    if not DEBUG:
+        remove_file(file)
     FileStorage._FileStorage__file_path = "storage_file.json"
 
 

@@ -1,6 +1,8 @@
 #!/usr/bin/python3
 """Define helper functions"""
 
+DEBUG = False
+
 
 def remove_file(file: str) -> None:
     """Remove a file"""

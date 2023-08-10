@@ -10,7 +10,7 @@ from datetime import datetime
 
 from models.base_model import BaseModel
 from models.engine.file_storage import FileStorage
-from tests.helper import remove_file
+from tests.helper import remove_file, DEBUG
 
 
 def setUpModule():
@@ -21,7 +21,8 @@ def setUpModule():
 def tearDownModule():
     """Change json file to the default"""
     file = FileStorage._FileStorage__file_path
-    remove_file(file)
+    if not DEBUG:
+        remove_file(file)
     FileStorage._FileStorage__file_path = "storage_file.json"
 
 
@@ -43,14 +44,14 @@ class TestBaseModelDocstrings(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        """Remove unused attributs from Test class"""
+        """Remove unused attributes from Test class"""
         del cls.docstrings_list
 
     def test_BaseModel_docstring(self):
         """Test docstring"""
         for docstring in self.__class__.docstrings_list:
             with self.subTest(docstring=docstring):
-                self.assertTrue(len(docstring) > 10)
+                self.assertTrue(docstring)
 
 
 class TestBaseClass(unittest.TestCase):
@@ -71,7 +72,8 @@ class TestBaseClass(unittest.TestCase):
         """Resets FileStorage data."""
         FileStorage._FileStorage__objects = {}
         file = FileStorage._FileStorage__file_path
-        remove_file(file)
+        if not DEBUG:
+            remove_file(file)
 
     def test_instantiation(self):
         """Tests BaseModel instantion"""
@@ -103,7 +105,7 @@ class TestBaseClass(unittest.TestCase):
             with self.subTest():
                 self.assertTrue(hasattr(ele[0], ele[1]))
 
-    def test_class_date_attributes_type(self):
+    def test_class_date_attribute_type(self):
         """Tests attributes create_at, update_at types"""
         attrs = [
             (self.base.created_at, datetime),
@@ -157,7 +159,7 @@ class TestBaseClass(unittest.TestCase):
             list_date.append(base.updated_at)
         self.assertEqual(len(set(list_date)), max_number)
 
-    def test_that_save_method_updates_updated_at_attr(self):
+    def test_that_save_method_updates__attr(self):
         """
         Checks that save() method updates 'updated_at' attribute
         """

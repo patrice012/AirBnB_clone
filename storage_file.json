@@ -1,1 +1,1 @@
-{"BaseModel.eed6da14-02cc-4d37-84de-e0c336910475": {"__class__": "BaseModel", "id": "eed6da14-02cc-4d37-84de-e0c336910475", "created_at": "2023-08-11T13:40:50.116527", "updated_at": "2023-08-11T13:42:44.055130", "name": "update"}}
+{"User.216d8312-c01d-4eb9-9540-b852c10903f9": {"__class__": "User", "id": "216d8312-c01d-4eb9-9540-b852c10903f9", "created_at": "2023-08-11T14:39:11.752428", "updated_at": "2023-08-11T14:39:11.752466", "first_name": "John", "last_name": "Smith", "email": "email@mail.com", "password": "password"}}

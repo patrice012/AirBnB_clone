@@ -38,8 +38,6 @@ class TestFileStorageDocstrings(unittest.TestCase):
         docs_list.append(base.all.__doc__)
         docs_list.append(base.new.__doc__)
         docs_list.append(base.save.__doc__)
-        docs_list.append(base.object_classes.__doc__)
-        docs_list.append(base.get_object_class.__doc__)
         docs_list.append(base.reload.__doc__)
         cls.docstrings_list = docs_list
 

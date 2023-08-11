@@ -67,7 +67,8 @@ class FileStorage:
             (only if the JSON file (__file_path) exists
              If the file doesn’t exist, no exception should be raised)
         """
-        from ..base_model import BaseModel
+        from models.base_model import BaseModel
+        from models.user import User
 
         path = FileStorage.__file_path
         if os.path.isfile(path):

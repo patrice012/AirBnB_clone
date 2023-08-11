@@ -1,10 +1,12 @@
 import unittest
 from models.state import State
+
 """State Class Tests"""
 
 
 class TestState(unittest.TestCase):
     """TestState Class"""
+
     def setUp(self):
         """Sets up State for testing"""
         self.state = State()

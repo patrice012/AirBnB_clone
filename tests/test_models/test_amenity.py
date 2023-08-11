@@ -1,10 +1,12 @@
 import unittest
 from models.amenity import Amenity
+
 """Amenity Class Tests"""
 
 
 class TestAmenity(unittest.TestCase):
     """TestAmenity Class"""
+
     def setUp(self):
         """Sets up Amenity for testing"""
         self.amenity = Amenity()

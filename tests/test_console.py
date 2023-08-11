@@ -76,7 +76,6 @@ class TestHBNBCommand_create(unittest.TestCase):
             test_k = "BaseModel.{}".format(console.getvalue().strip())
             self.assertIn(test_k, storage.all().keys())
 
-    @unittest.skip("Class has not been created yet")
     def test_create_object_using_Review_class(self):
         with patch("sys.stdout", new=StringIO()) as console:
             self.assertFalse(HBNBCommand().onecmd("create Review"))
@@ -84,7 +83,6 @@ class TestHBNBCommand_create(unittest.TestCase):
             test_k = "Review.{}".format(console.getvalue().strip())
             self.assertIn(test_k, storage.all().keys())
 
-    # @unittest.skip("Class has not been created yet")
     def test_create_object_using_User_class(self):
         with patch("sys.stdout", new=StringIO()) as console:
             self.assertFalse(HBNBCommand().onecmd("create User"))
@@ -92,7 +90,6 @@ class TestHBNBCommand_create(unittest.TestCase):
             test_k = "User.{}".format(console.getvalue().strip())
             self.assertIn(test_k, storage.all().keys())
 
-    @unittest.skip("Class has not been created yet")
     def test_create_object_using_Place_class(self):
         with patch("sys.stdout", new=StringIO()) as console:
             self.assertFalse(HBNBCommand().onecmd("create Place"))
@@ -100,7 +97,6 @@ class TestHBNBCommand_create(unittest.TestCase):
             test_k = "Place.{}".format(console.getvalue().strip())
             self.assertIn(test_k, storage.all().keys())
 
-    @unittest.skip("Class has not been created yet")
     def test_create_object_using_State_class(self):
         with patch("sys.stdout", new=StringIO()) as console:
             self.assertFalse(HBNBCommand().onecmd("create State"))
@@ -108,7 +104,6 @@ class TestHBNBCommand_create(unittest.TestCase):
             test_k = "State.{}".format(console.getvalue().strip())
             self.assertIn(test_k, storage.all().keys())
 
-    @unittest.skip("Class has not been created yet")
     def test_create_object_using_Amenity_class(self):
         with patch("sys.stdout", new=StringIO()) as console:
             self.assertFalse(HBNBCommand().onecmd("create Amenity"))
@@ -116,7 +111,6 @@ class TestHBNBCommand_create(unittest.TestCase):
             test_k = "Amenity.{}".format(console.getvalue().strip())
             self.assertIn(test_k, storage.all().keys())
 
-    @unittest.skip("Class has not been created yet")
     def test_create_object_using_City_class(self):
         with patch("sys.stdout", new=StringIO()) as console:
             self.assertFalse(HBNBCommand().onecmd("create City"))
@@ -173,13 +167,11 @@ class TestHBNBCommand_show(unittest.TestCase):
             "show Review",
             "show Place",
         ]
-        # models_list = models_list[0]
-        # for prompt in models_list:
-        prompt = models_list[0]
-        with self.subTest(prompt=prompt):
-            with patch("sys.stdout", new=StringIO()) as console:
-                self.assertFalse(HBNBCommand().onecmd(prompt))
-                self.assertEqual(expected, console.getvalue().strip())
+        for prompt in models_list:
+            with self.subTest(prompt=prompt):
+                with patch("sys.stdout", new=StringIO()) as console:
+                    self.assertFalse(HBNBCommand().onecmd(prompt))
+                    self.assertEqual(expected, console.getvalue().strip())
 
     def test_show_no_instance_found_space_notation(self):
         expected = "** no instance found **"
@@ -191,13 +183,11 @@ class TestHBNBCommand_show(unittest.TestCase):
             "show Review 1",
             "show Place 1",
         ]
-        # models_list = models_list[0]
-        # for prompt in models_list:
-        prompt = models_list[0]
-        with self.subTest(prompt=prompt):
-            with patch("sys.stdout", new=StringIO()) as console:
-                self.assertFalse(HBNBCommand().onecmd(prompt))
-                self.assertEqual(expected, console.getvalue().strip())
+        for prompt in models_list:
+            with self.subTest(prompt=prompt):
+                with patch("sys.stdout", new=StringIO()) as console:
+                    self.assertFalse(HBNBCommand().onecmd(prompt))
+                    self.assertEqual(expected, console.getvalue().strip())
 
     def test_show_objects_space_notation(self):
         models_list = [
@@ -208,19 +198,17 @@ class TestHBNBCommand_show(unittest.TestCase):
             "create Review",
             "create Place",
         ]
-        # models_list = models_list[0]
-        # for prompt in models_list:
-        prompt = models_list[0]
-        with self.subTest(prompt=prompt):
-            with patch("sys.stdout", new=StringIO()) as console:
-                self.assertFalse(HBNBCommand().onecmd(prompt))
-                o_id = console.getvalue().strip()
-            model = prompt.split()[1]
-            with patch("sys.stdout", new=StringIO()) as console:
-                o = storage.all()["{}.{}".format(model, o_id)]
-                command = "show {} {}".format(model, o_id)
-                self.assertFalse(HBNBCommand().onecmd(command))
-                self.assertEqual(o.__str__(), console.getvalue().strip())
+        for prompt in models_list:
+            with self.subTest(prompt=prompt):
+                with patch("sys.stdout", new=StringIO()) as console:
+                    self.assertFalse(HBNBCommand().onecmd(prompt))
+                    o_id = console.getvalue().strip()
+                model = prompt.split()[1]
+                with patch("sys.stdout", new=StringIO()) as console:
+                    o = storage.all()["{}.{}".format(model, o_id)]
+                    command = "show {} {}".format(model, o_id)
+                    self.assertFalse(HBNBCommand().onecmd(command))
+                    self.assertEqual(o.__str__(), console.getvalue().strip())
 
 
 class TestHBNBCommand_destroy(unittest.TestCase):
@@ -263,13 +251,11 @@ class TestHBNBCommand_destroy(unittest.TestCase):
             "destroy Review",
             "destroy Place",
         ]
-        # models_list = models_list[0]
-        # for prompt in models_list:
-        prompt = models_list[0]
-        with self.subTest(prompt=prompt):
-            with patch("sys.stdout", new=StringIO()) as console:
-                self.assertFalse(HBNBCommand().onecmd(prompt))
-                self.assertEqual(expected, console.getvalue().strip())
+        for prompt in models_list:
+            with self.subTest(prompt=prompt):
+                with patch("sys.stdout", new=StringIO()) as console:
+                    self.assertFalse(HBNBCommand().onecmd(prompt))
+                    self.assertEqual(expected, console.getvalue().strip())
 
     def test_destroy_invalid_id_space_notation(self):
         expected = "** no instance found **"
@@ -281,13 +267,11 @@ class TestHBNBCommand_destroy(unittest.TestCase):
             "destroy Review 1",
             "destroy Place 1",
         ]
-        # models_list = models_list[0]
-        # for prompt in models_list:
-        prompt = models_list[0]
-        with self.subTest(prompt=prompt):
-            with patch("sys.stdout", new=StringIO()) as console:
-                self.assertFalse(HBNBCommand().onecmd(prompt))
-                self.assertEqual(expected, console.getvalue().strip())
+        for prompt in models_list:
+            with self.subTest(prompt=prompt):
+                with patch("sys.stdout", new=StringIO()) as console:
+                    self.assertFalse(HBNBCommand().onecmd(prompt))
+                    self.assertEqual(expected, console.getvalue().strip())
 
     def test_destroy_objects_space_notation(self):
         models_list = [
@@ -298,18 +282,18 @@ class TestHBNBCommand_destroy(unittest.TestCase):
             "create Review",
             "create Place",
         ]
-        prompt = models_list[0]
-        with self.subTest(prompt=prompt):
-            with patch("sys.stdout", new=StringIO()) as console:
-                self.assertFalse(HBNBCommand().onecmd(prompt))
-                o_id = console.getvalue().strip()
-            model = prompt.split()[1]
+        for prompt in models_list:
+            with self.subTest(prompt=prompt):
+                with patch("sys.stdout", new=StringIO()) as console:
+                    self.assertFalse(HBNBCommand().onecmd(prompt))
+                    o_id = console.getvalue().strip()
+                model = prompt.split()[1]
 
-            with patch("sys.stdout", new=StringIO()) as console:
-                o = storage.all()["{}.{}".format(model, o_id)]
-                command = "show {} {}".format(model, o_id)
-                self.assertFalse(HBNBCommand().onecmd(command))
-                self.assertNotIn(o, storage.all())
+                with patch("sys.stdout", new=StringIO()) as console:
+                    o = storage.all()["{}.{}".format(model, o_id)]
+                    command = "show {} {}".format(model, o_id)
+                    self.assertFalse(HBNBCommand().onecmd(command))
+                    self.assertNotIn(o, storage.all())
 
 
 class TestHBNBCommand_all(unittest.TestCase):
@@ -338,11 +322,11 @@ class TestHBNBCommand_all(unittest.TestCase):
             "Review",
             "Place",
         ]
-        model = models_list[0]
-        with self.subTest(model=model):
-            with patch("sys.stdout", new=StringIO()) as console:
-                self.assertFalse(HBNBCommand().onecmd("all"))
-                self.assertIn(model, console.getvalue().strip())
+        for model in models_list:
+            with self.subTest(model=model):
+                with patch("sys.stdout", new=StringIO()) as console:
+                    self.assertFalse(HBNBCommand().onecmd("all"))
+                    self.assertIn(model, console.getvalue().strip())
 
     def test_all_invalid_class(self):
         expected = "** class doesn't exist **"
@@ -362,12 +346,12 @@ class TestHBNBCommand_all(unittest.TestCase):
             "all Review",
             "all Place",
         ]
-        model = models_list[0]
-        with self.subTest(model=model):
-            model = model.split()[1]
-            with patch("sys.stdout", new=StringIO()) as console:
-                self.assertFalse(HBNBCommand().onecmd(f"all {model}"))
-                self.assertIn(f"{model}", console.getvalue().strip())
+        for model in models_list:
+            with self.subTest(model=model):
+                model = model.split()[1]
+                with patch("sys.stdout", new=StringIO()) as console:
+                    self.assertFalse(HBNBCommand().onecmd(f"all {model}"))
+                    self.assertIn(f"{model}", console.getvalue().strip())
 
 
 if __name__ == "__main__":

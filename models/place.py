@@ -1,9 +1,11 @@
 from models.base_model import BaseModel
+
 """Place Class representation"""
 
 
 class Place(BaseModel):
     """Place Class"""
+
     city_id = ""
     user_id = ""
     name = ""

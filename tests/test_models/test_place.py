@@ -1,10 +1,12 @@
 import unittest
 from models.place import Place
+
 """Place Class Unittest"""
 
 
 class TestPlace(unittest.TestCase):
     """TestPlace Class"""
+
     def setUp(self):
         """Sets up Place for testing"""
         self.place = Place()
@@ -70,5 +72,5 @@ class TestPlace(unittest.TestCase):
         self.assertEqual(self.new_place.name, "San Francisco")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

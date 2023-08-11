@@ -1,10 +1,12 @@
 import unittest
 from models.city import City
+
 """City Class Tests"""
 
 
 class TestCity(unittest.TestCase):
     """TestCity Class"""
+
     def setUp(self):
         """Sets up City for testing"""
         self.city = City()

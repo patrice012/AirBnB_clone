@@ -1,10 +1,12 @@
 import unittest
 from models.review import Review
+
 """Review Class Tests"""
 
 
 class TestReview(unittest.TestCase):
     """TestReview Class"""
+
     def setUp(self):
         """Sets up Review for testing"""
         self.review = Review()

@@ -9,6 +9,7 @@ import re
 from shlex import split
 
 from models.base_model import BaseModel
+from models.user import User
 from models import storage
 
 
@@ -42,7 +43,7 @@ class HBNBCommand(cmd.Cmd):
 
     prompt = "(hbnb) "
 
-    object_classes = {"BaseModel": BaseModel}
+    object_classes = {"BaseModel": BaseModel, "User": User}
 
     def do_create(self, cls_name):
         """
@@ -68,7 +69,6 @@ class HBNBCommand(cmd.Cmd):
         based on the class name and id
         """
         cmd = parse_arguments(cls_name)
-        print(cmd)
         if len(cmd) == 0:
             print("** class name missing **")
         elif cmd[0] not in self.object_classes.keys():

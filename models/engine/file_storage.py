@@ -59,32 +59,6 @@ class FileStorage:
             dict_objects = {key: value.to_dict() for key, value in obj}
             json.dump(dict_objects, file)
 
-    @staticmethod
-    def object_classes():
-        """
-        Helper function
-        map class names to python class
-        """
-        from ..base_model import BaseModel
-
-        classes = {"BaseModel": BaseModel}
-
-        return classes
-
-    @staticmethod
-    def get_object_class(string_cls):
-        """
-        Select object class base on `string_cls`
-        Args:
-            string_cls(str): string name of the instance class
-        Return:
-            Instance's Class
-        """
-        if type(string_cls) is not str or string_cls is None:
-            raise TypeError(f"{string_cls} must be a string object")
-        classes = FileStorage.object_classes()
-        return classes[string_cls]
-
     def reload(self):
         """
         Reload objects from file
@@ -93,11 +67,12 @@ class FileStorage:
             (only if the JSON file (__file_path) exists
              If the file doesn’t exist, no exception should be raised)
         """
+        from ..base_model import BaseModel
+
         path = FileStorage.__file_path
         if os.path.isfile(path):
             with open(path, "r") as file:
-                storage_dict = json.load(file)
-                for key, value in storage_dict.items():
-                    Klass = self.get_object_class(value.get("__class__", None))
-                    storage_dict[key] = Klass(**value)
-                FileStorage.__objects = storage_dict
+                data = json.load(file)
+                for key, value in data.items():
+                    Klass = key.split(".")[0]
+                    self.new(eval(Klass)(**value))

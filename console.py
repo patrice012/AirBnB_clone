@@ -68,6 +68,7 @@ class HBNBCommand(cmd.Cmd):
         based on the class name and id
         """
         cmd = parse_arguments(cls_name)
+        print(cmd)
         if len(cmd) == 0:
             print("** class name missing **")
         elif cmd[0] not in self.object_classes.keys():
@@ -123,6 +124,45 @@ class HBNBCommand(cmd.Cmd):
                     list_objects.append(str(obj))
         if len(list_objects) > 0:
             print(list_objects)
+
+    def do_update(self, prompt):
+        """
+        Updates an instance based on the class name and id
+        by adding or updating attribute (save the change into the JSON file)
+        Usage: update <class name> <id> <attribute name> "<attribute value>"
+        """
+        args = parse_arguments(prompt)
+        objects = storage.all()
+        if len(args) == 0:
+            print("** class name missing **")
+            return False
+        elif args[0] not in self.object_classes.keys():
+            print("** class doesn't exist **")
+            return False
+        elif len(args) == 1:
+            print("** instance id missing **")
+            return False
+        elif f"{args[0]}.{args[1]}" not in objects:
+            print("** no instance found **")
+            return False
+        elif len(args) == 2:
+            print("** attribute name missing **")
+            return False
+        elif len(args) == 3:
+            print("** value missing **")
+            return False
+
+        object_class, object_id = args[0], args[1]
+        update_attr, attr_value = args[2], args[3]
+        instance_repr = f"{args[0]}.{args[1]}"
+        if len(args) == 4:
+            setattr(objects[instance_repr], update_attr, attr_value)
+        elif type(eval(update_attr)) == dict:
+            for key, value in eval(update_attr).items():
+                setattr(storage_objects[instance_repr], key, value)
+        else:
+            setattr(objects[instance_repr], update_attr, attr_value)
+        objects[instance_repr].save()
 
     def do_quit(self, args):
         """Quit command to exit the program"""

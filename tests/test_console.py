@@ -162,7 +162,8 @@ class TestHBNBCommand_show(unittest.TestCase):
         models_list = [
             "show BaseModel",
             "show State",
-            "show User" "show Amenity",
+            "show User",
+            "show Amenity",
             "show City",
             "show Review",
             "show Place",
@@ -178,7 +179,8 @@ class TestHBNBCommand_show(unittest.TestCase):
         models_list = [
             "show BaseModel 1",
             "show State 1",
-            "show User 1" "show Amenity 1",
+            "show User 1",
+            "show Amenity 1",
             "show City 1",
             "show Review 1",
             "show Place 1",
@@ -193,7 +195,8 @@ class TestHBNBCommand_show(unittest.TestCase):
         models_list = [
             "create BaseModel",
             "create State",
-            "create User" "create Amenity",
+            "create User",
+            "create Amenity",
             "create City",
             "create Review",
             "create Place",
@@ -220,13 +223,14 @@ class TestHBNBCommand_destroy(unittest.TestCase):
         models_list = [
             "create BaseModel",
             "create State",
-            "create User" "create Amenity",
+            "create User",
+            "create Amenity",
             "create City",
             "create Review",
             "create Place",
         ]
-        model = models_list[0]
-        HBNBCommand().onecmd(model)
+        for model in models_list:
+            HBNBCommand().onecmd(model)
 
     def test_destroy_missing_class(self):
         expected = "** class name missing **"
@@ -246,7 +250,8 @@ class TestHBNBCommand_destroy(unittest.TestCase):
         models_list = [
             "destroy BaseModel",
             "destroy State",
-            "destroy User" "destroy Amenity",
+            "destroy User",
+            "destroy Amenity",
             "destroy City",
             "destroy Review",
             "destroy Place",
@@ -262,7 +267,8 @@ class TestHBNBCommand_destroy(unittest.TestCase):
         models_list = [
             "destroy BaseModel 1",
             "destroy State 1",
-            "destroy User 1" "destroy Amenity 1",
+            "destroy User 1",
+            "destroy Amenity 1",
             "destroy City 1",
             "destroy Review 1",
             "destroy Place 1",
@@ -277,7 +283,8 @@ class TestHBNBCommand_destroy(unittest.TestCase):
         models_list = [
             "create BaseModel",
             "create State",
-            "create User" "create Amenity",
+            "create User",
+            "create Amenity",
             "create City",
             "create Review",
             "create Place",
@@ -305,19 +312,21 @@ class TestHBNBCommand_all(unittest.TestCase):
         models_list = [
             "create BaseModel",
             "create State",
-            "create User" "create Amenity",
+            "create User",
+            "create Amenity",
             "create City",
             "create Review",
             "create Place",
         ]
-        model = models_list[0]
-        HBNBCommand().onecmd(model)
+        for model in models_list:
+            HBNBCommand().onecmd(model)
 
     def test_all_objects_space_notation(self):
         models_list = [
             "BaseModel",
             "State",
-            "User" "Amenity",
+            "User",
+            "Amenity",
             "City",
             "Review",
             "Place",
@@ -341,7 +350,8 @@ class TestHBNBCommand_all(unittest.TestCase):
         models_list = [
             "all BaseModel",
             "all State",
-            "all User" "all Amenity",
+            "all User",
+            "all Amenity",
             "all City",
             "all Review",
             "all Place",

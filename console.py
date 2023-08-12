@@ -57,22 +57,23 @@ class HBNBCommand(cmd.Cmd):
         "Review": Review,
     }
 
-    def default(self, line):
+    def default(self, arg):
         """
         Called on an input line when the command prefix is not recognized
         """
         import re
 
-        if re.search(r"\.", line) is None:
-            print("*** Unknown syntax: {}".format(line))
+        match = re.search(r"\.", arg)
+        if match is None:
+            print("*** Unknown 000 syntax: {}".format(arg))
             return False
-        cls_name = re.split(r"\.", line)[0]
-        extra_args = re.split(r"\(|\)", re.split(r"\.", line)[1])
-        func = extra_args[0]
-        args = re.split(r"\,", extra_args[1])
-        str_args = " ".join(args)
-        prompt = func + " " + cls_name + " " + str_args
-        HBNBCommand().onecmd(prompt)
+        cmd_args = [arg[:match.span()[0]], arg[match.span()[1]:]]
+        match = re.search(r"\((.*?)\)", cmd_args[1])
+        if match is not None:
+            command = [cmd_args[1][: match.span()[0]], match.group()[1:-1]]
+            call = "{} {}".format(cmd_args[0], command[1].strip(","))
+            prompt = f"{command[0].strip(',')} {call.strip(',')}"
+            HBNBCommand().onecmd(prompt)
 
     def do_create(self, cls_name):
         """
@@ -154,44 +155,53 @@ class HBNBCommand(cmd.Cmd):
         if len(list_objects) > 0:
             print(list_objects)
 
-    def do_update(self, prompt):
+    def do_update(self, arg):
         """
         Updates an instance based on the class name and id
         by adding or updating attribute (save the change into the JSON file)
         Usage: update <class name> <id> <attribute name> "<attribute value>"
         """
-        args = parse_arguments(prompt)
-        objects = storage.all()
-        if len(args) == 0:
+        cmd_args = parse_arguments(arg)
+        storage_objects = storage.all()
+
+        if len(cmd_args) == 0:
             print("** class name missing **")
             return False
-        elif args[0] not in self.object_classes.keys():
+        elif cmd_args[0] not in self.object_classes.keys():
             print("** class doesn't exist **")
             return False
-        elif len(args) == 1:
+        elif len(cmd_args) == 1:
             print("** instance id missing **")
             return False
-        elif f"{args[0]}.{args[1]}" not in objects:
+        elif f"{cmd_args[0]}.{cmd_args[1]}" not in storage.all():
             print("** no instance found **")
             return False
-        elif len(args) == 2:
+        elif len(cmd_args) == 2:
             print("** attribute name missing **")
             return False
-        elif len(args) == 3:
-            print("** value missing **")
-            return False
+        elif len(cmd_args) == 3:
+            try:
+                type(eval(cmd_args[2])) != dict
+            except NameError:
+                print("** value missing **")
+                return False
 
-        object_class, object_id = args[0], args[1]
-        update_attr, attr_value = args[2], args[3]
-        instance_repr = f"{args[0]}.{args[1]}"
-        if len(args) == 4:
-            setattr(objects[instance_repr], update_attr, attr_value)
-        elif type(eval(update_attr)) == dict:
-            for key, value in eval(update_attr).items():
-                setattr(storage_objects[instance_repr], key, value)
+        if len(cmd_args) == 4:
+            setattr(
+                storage_objects[f"{cmd_args[0]}.{cmd_args[1]}"],
+                cmd_args[2],
+                cmd_args[3],
+            )
+        elif type(eval(cmd_args[2])) == dict:
+            for k, v in eval(cmd_args[2]).items():
+                setattr(storage_objects[f"{cmd_args[0]}.{cmd_args[1]}"], k, v)
         else:
-            setattr(objects[instance_repr], update_attr, attr_value)
-        objects[instance_repr].save()
+            setattr(
+                storage_objects[f"{cmd_args[0]}.{cmd_args[1]}"],
+                cmd_args[2],
+                cmd_args[3],
+            )
+        storage_objects[f"{cmd_args[0]}.{cmd_args[1]}"].save()
 
     def do_count(self, prompt):
         """

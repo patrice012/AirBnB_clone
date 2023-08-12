@@ -49,7 +49,6 @@ class BaseModel:
     def __str__(self):
         """
         Return the string representation of the instance
-
         Format: [<class name>] (<instance.id>) <instance.__dict__>
         """
         _cls = self.__class__.__name__

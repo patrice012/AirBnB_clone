@@ -4,7 +4,14 @@ from models.base_model import BaseModel
 
 
 class Review(BaseModel):
-    """Review Class"""
+    """
+    Review Class
+
+    Attribute:
+        place_id(str): empty string
+        user_id(str): empty string
+        text(str): empty string
+    """
 
     place_id = ""
     user_id = ""

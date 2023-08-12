@@ -4,7 +4,22 @@ from models.base_model import BaseModel
 
 
 class Place(BaseModel):
-    """Place Class"""
+    """
+    Place Class
+
+    Attributes:
+        city_id(str): empty string
+        user_id(str): empty string
+        name(str): empty string
+        description(str): empty string
+        number_rooms(int): 0 as default value
+        number_bathrooms(int): 0 as default value
+        max_guest(int): 0 as default value
+        price_by_night(int): 0 as default value
+        latitude(float): 0.0 as default value
+        longitude(float): 0.0 as default value
+        amenity_ids(list): empty list
+    """
 
     city_id = ""
     user_id = ""

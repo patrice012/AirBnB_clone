@@ -4,7 +4,13 @@ from models.base_model import BaseModel
 
 
 class City(BaseModel):
-    """City Class"""
+    """
+    City Class
+
+    Attribute:
+        state_id(str): empty string
+        name(str): empty string
+    """
 
     state_id = ""
     name = ""

@@ -57,21 +57,21 @@ class HBNBCommand(cmd.Cmd):
         "Review": Review,
     }
 
-
     def default(self, line):
         """
         Called on an input line when the command prefix is not recognized
         """
         import re
+
         if re.search(r"\.", line) is None:
             print("*** Unknown syntax: {}".format(line))
             return False
-        cls_name = re.split('\.', line)[0]
-        extra_args = re.split("\(|\)", re.split('\.', line)[1])
+        cls_name = re.split(r"\.", line)[0]
+        extra_args = re.split(r"\(|\)", re.split(r"\.", line)[1])
         func = extra_args[0]
-        args = re.split('\,', extra_args[1])
+        args = re.split(r"\,", extra_args[1])
         str_args = " ".join(args)
-        prompt = func + " " +  cls_name + " " +str_args
+        prompt = func + " " + cls_name + " " + str_args
         HBNBCommand().onecmd(prompt)
 
     def do_create(self, cls_name):
@@ -202,7 +202,7 @@ class HBNBCommand(cmd.Cmd):
         args = parse_arguments(prompt)
         objects = storage.all()
         for key, value in objects.items():
-            if key.split('.')[0] == args[0]:
+            if key.split(".")[0] == args[0]:
                 count += 1
         print(count)
 

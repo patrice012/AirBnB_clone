@@ -37,7 +37,6 @@ def parse_arguments(arg):
         lexer = split(arg[: curly_braces_match.span()[0]])
         arguments = [i.strip(",") for i in lexer]
         arguments.append(curly_braces_match.group())
-
     return arguments
 
 
@@ -57,6 +56,23 @@ class HBNBCommand(cmd.Cmd):
         "Amenity": Amenity,
         "Review": Review,
     }
+
+
+    def default(self, line):
+        """
+        Called on an input line when the command prefix is not recognized
+        """
+        import re
+        if re.search(r"\.", line) is None:
+            print("*** Unknown syntax: {}".format(line))
+            return False
+        cls_name = re.split('\.', line)[0]
+        extra_args = re.split("\(|\)", re.split('\.', line)[1])
+        func = extra_args[0]
+        args = re.split('\,', extra_args[1])
+        str_args = " ".join(args)
+        prompt = func + " " +  cls_name + " " +str_args
+        HBNBCommand().onecmd(prompt)
 
     def do_create(self, cls_name):
         """
@@ -177,6 +193,19 @@ class HBNBCommand(cmd.Cmd):
             setattr(objects[instance_repr], update_attr, attr_value)
         objects[instance_repr].save()
 
+    def do_count(self, prompt):
+        """
+        Usage: count <class> or <class>.count()
+        Retrieves the number of instances of a class
+        """
+        count = 0
+        args = parse_arguments(prompt)
+        objects = storage.all()
+        for key, value in objects.items():
+            if key.split('.')[0] == args[0]:
+                count += 1
+        print(count)
+
     def do_quit(self, args):
         """Quit command to exit the program"""
         return True
@@ -187,7 +216,9 @@ class HBNBCommand(cmd.Cmd):
         return True
 
     def emptyline(self):
-        """Empty line"""
+        """
+        Method called when an empty line is entered in response to the prompt
+        """
         pass
 
 

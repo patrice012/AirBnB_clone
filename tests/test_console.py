@@ -31,7 +31,7 @@ def setUpModule():
 def tearDownModule():
     """Change json file to the default"""
     file = FileStorage._FileStorage__file_path
-    if DEBUG:
+    if DEBUG and file:
         remove_file(file)
     FileStorage._FileStorage__file_path = "storage_file.json"
 
@@ -118,6 +118,12 @@ class TestHBNBCommand_create(unittest.TestCase):
     def setUpClass(cls):
         FileStorage.__objects = {}
 
+    @classmethod
+    def tearDownClass(cls):
+        file = FileStorage._FileStorage__file_path
+        if file:
+            remove_file(file)
+
     def test_create_object(self):
         models_list = [
         "create BaseModel",
@@ -127,6 +133,25 @@ class TestHBNBCommand_create(unittest.TestCase):
         "create Amenity",
         "create City",
         "create State",
+        ]
+        for prompt in models_list:
+            with self.subTest():
+                with patch("sys.stdout", new=StringIO()) as console:
+                    self.assertFalse(HBNBCommand().onecmd(prompt))
+                    self.assertLess(0, len(console.getvalue().strip()))
+                    Klass = prompt.split(" ")[1]
+                    test_k = "{}.{}".format(Klass,console.getvalue().strip())
+                    self.assertIn(test_k, storage.all().keys())
+
+    def test_create_using_dot_notation(self):
+        models_list = [
+        "BaseModel.create()",
+        "Review.create()",
+        "User.create()",
+        "Place.create()",
+        "Amenity.create()",
+        "City.create()",
+        "BaseModel.create()",
         ]
         for prompt in models_list:
             with self.subTest():
@@ -149,40 +174,32 @@ class TestHBNBCommand_create(unittest.TestCase):
             self.assertFalse(HBNBCommand().onecmd("create"))
             self.assertEqual(expected, console.getvalue().strip())
 
-
-class TestHBNBCommand_create_using_dot_notation(unittest.TestCase):
-    """Tests for create command of the HBNB console."""
-
-    @classmethod
-    def setUpClass(cls):
-        FileStorage.__objects = {}
-
-    def test_create_object(self):
-        models_list = [
-        "BaseModel.create()",
-        "Review.create()",
-        "User.create()",
-        "Place.create()",
-        "Amenity.create()",
-        "City.create()",
-        "BaseModel.create()",
-        ]
-
-
     def test_create_using_dot_notation(self):
-        expected = "*** Unknown syntax: BaseModel.create()"
+        expected = "** class name missing **"
         with patch("sys.stdout", new=StringIO()) as console:
-            self.assertFalse(HBNBCommand().onecmd("BaseModel.create()"))
+            self.assertFalse(HBNBCommand().onecmd(".create()"))
             self.assertEqual(expected, console.getvalue().strip())
 
-        expected = "*** Unknown syntax: MyModel.create()"
+        expected = "** class doesn't exist **"
         with patch("sys.stdout", new=StringIO()) as console:
             self.assertFalse(HBNBCommand().onecmd("MyModel.create()"))
             self.assertEqual(expected, console.getvalue().strip())
 
 
+
+
 class TestHBNBCommand_show(unittest.TestCase):
     """Tests for show command of the HBNB console"""
+
+    @classmethod
+    def setUpClass(cls):
+        FileStorage.__objects = {}
+
+    @classmethod
+    def tearDownClass(cls):
+        file = FileStorage._FileStorage__file_path
+        if file:
+            remove_file(file)
 
     def test_show_invalid_class(self):
         expected = "** class doesn't exist **"
@@ -244,13 +261,35 @@ class TestHBNBCommand_show(unittest.TestCase):
             with self.subTest(prompt=prompt):
                 with patch("sys.stdout", new=StringIO()) as console:
                     self.assertFalse(HBNBCommand().onecmd(prompt))
-                    o_id = console.getvalue().strip()
+                    object_id = console.getvalue().strip()
                 model = prompt.split()[1]
                 with patch("sys.stdout", new=StringIO()) as console:
-                    o = storage.all()["{}.{}".format(model, o_id)]
-                    command = "show {} {}".format(model, o_id)
+                    obj = storage.all()["{}.{}".format(model, object_id)]
+                    command = "show {} {}".format(model, object_id)
                     self.assertFalse(HBNBCommand().onecmd(command))
-                    self.assertEqual(o.__str__(), console.getvalue().strip())
+                    self.assertEqual(obj.__str__(), console.getvalue().strip())
+
+    def test_show_objects_dot_notation(self):
+        models_list = [
+            "create BaseModel",
+            "create State",
+            "create User",
+            "create Amenity",
+            "create City",
+            "create Review",
+            "create Place",
+        ]
+        for prompt in models_list:
+            with self.subTest(prompt=prompt):
+                with patch("sys.stdout", new=StringIO()) as console:
+                    self.assertFalse(HBNBCommand().onecmd(prompt))
+                    object_id = console.getvalue().strip()
+                model = prompt.split()[1]
+                with patch("sys.stdout", new=StringIO()) as console:
+                    obj = storage.all()["{}.{}".format(model, object_id)]
+                    command = "{}.{}({})".format(model,'show', object_id)
+                    self.assertFalse(HBNBCommand().onecmd(command))
+                    self.assertEqual(obj.__str__(), console.getvalue().strip())
 
 
 class TestHBNBCommand_destroy(unittest.TestCase):
@@ -271,17 +310,23 @@ class TestHBNBCommand_destroy(unittest.TestCase):
         for model in models_list:
             HBNBCommand().onecmd(model)
 
-    def test_destroy_missing_class(self):
+    def test_destroy_missing_class_space_notation(self):
         expected = "** class name missing **"
         with patch("sys.stdout", new=StringIO()) as console:
             self.assertFalse(HBNBCommand().onecmd("destroy"))
             self.assertEqual(expected, console.getvalue().strip())
 
+    def test_destroy_missing_class_dot_notation(self):
+        expected = "** class name missing **"
+        with patch("sys.stdout", new=StringIO()) as console:
+            self.assertFalse(HBNBCommand().onecmd(".destroy"))
+            self.assertEqual(expected, console.getvalue().strip())
+
     def test_destroy_invalid_class(self):
         expected = "** class doesn't exist **"
-
         with patch("sys.stdout", new=StringIO()) as console:
             self.assertFalse(HBNBCommand().onecmd("destroy MyModel"))
+            self.assertFalse(HBNBCommand().onecmd(".destroy"))
             self.assertEqual(expected, console.getvalue().strip())
 
     def test_destroy_id_missing_space_notation(self):
@@ -332,14 +377,14 @@ class TestHBNBCommand_destroy(unittest.TestCase):
             with self.subTest(prompt=prompt):
                 with patch("sys.stdout", new=StringIO()) as console:
                     self.assertFalse(HBNBCommand().onecmd(prompt))
-                    o_id = console.getvalue().strip()
+                    object_id = console.getvalue().strip()
                 model = prompt.split()[1]
 
                 with patch("sys.stdout", new=StringIO()) as console:
-                    o = storage.all()["{}.{}".format(model, o_id)]
-                    command = "show {} {}".format(model, o_id)
+                    obj = storage.all()["{}.{}".format(model, object_id)]
+                    command = "show {} {}".format(model, object_id)
                     self.assertFalse(HBNBCommand().onecmd(command))
-                    self.assertNotIn(o, storage.all())
+                    self.assertNotIn(obj, storage.all())
 
 
 class TestHBNBCommand_all(unittest.TestCase):

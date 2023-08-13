@@ -31,7 +31,7 @@ def setUpModule():
 def tearDownModule():
     """Change json file to the default"""
     file = FileStorage._FileStorage__file_path
-    if DEBUG and file:
+    if not DEBUG and file:
         remove_file(file)
     FileStorage._FileStorage__file_path = "storage_file.json"
 
@@ -130,16 +130,6 @@ class TestHBNBCommand_exit(unittest.TestCase):
 class TestHBNBCommand_create(unittest.TestCase):
     """Tests for create command of the HBNB console."""
 
-    @classmethod
-    def setUpClass(cls):
-        FileStorage.__objects = {}
-
-    @classmethod
-    def tearDownClass(cls):
-        file = FileStorage._FileStorage__file_path
-        if file:
-            remove_file(file)
-
     def test_create_object(self):
         models_list = [
             "create BaseModel",
@@ -204,16 +194,6 @@ class TestHBNBCommand_create(unittest.TestCase):
 
 class TestHBNBCommand_show(unittest.TestCase):
     """Tests for show command of the HBNB console"""
-
-    @classmethod
-    def setUpClass(cls):
-        FileStorage.__objects = {}
-
-    @classmethod
-    def tearDownClass(cls):
-        file = FileStorage._FileStorage__file_path
-        if file:
-            remove_file(file)
 
     def test_show_invalid_class(self):
         expected = "** class doesn't exist **"
@@ -504,16 +484,6 @@ class TestHBNBCommand_destroy(unittest.TestCase):
 class TestHBNBCommand_all(unittest.TestCase):
     """Tests for all command of the HBNB console."""
 
-    @classmethod
-    def setUpClass(cls):
-        FileStorage.__objects = {}
-
-    @classmethod
-    def tearDownClass(cls):
-        file = FileStorage._FileStorage__file_path
-        if file:
-            remove_file(file)
-
     @patch("sys.stdout", new_callable=StringIO)
     def setUp(self, mock_stdout):
         """Create all models instances for testing"""
@@ -590,16 +560,6 @@ class TestHBNBCommand_all(unittest.TestCase):
 
 class TestHBNBCommand_update(unittest.TestCase):
     """Test Update fonction"""
-
-    @classmethod
-    def setUpClass(cls):
-        FileStorage.__objects = {}
-
-    @classmethod
-    def tearDownClass(cls):
-        file = FileStorage._FileStorage__file_path
-        if file:
-            remove_file(file)
 
     def setUp(self):
         objects_mapping = {}
@@ -756,6 +716,43 @@ class TestHBNBCommand_update(unittest.TestCase):
                     for key, value in attr_dict.items():
                         self.assertTrue(key in test_dict.keys())
                         self.assertEqual(test_dict[key], value)
+
+
+class TestHBNBCommand_count(unittest.TestCase):
+    """
+    Test command count
+    """
+
+    @staticmethod
+    def create_object(max_number):
+        objects_mapping = {}
+        models_list = [
+            "create BaseModel",
+            "create State",
+            "create User",
+            "create Amenity",
+            "create City",
+            "create Review",
+            "create Place",
+        ]
+        for _ in range(max_number):
+            for prompt in models_list:
+                with patch("sys.stdout", new=StringIO()) as console:
+                    HBNBCommand().onecmd(prompt)
+
+    def test_count_single_object_for_all_class(self):
+        max_number = 1
+        obj_count_before = len(storage.all())
+        self.create_object(max_number)
+        obj_count_after = len(storage.all())
+        self.assertEqual(obj_count_after - obj_count_before, max_number * 7)
+
+    def test_count_many_objects_for_all_class(self):
+        max_number = 8
+        obj_count_before = len(storage.all())
+        self.create_object(max_number)
+        obj_count_after = len(storage.all())
+        self.assertEqual(obj_count_after - obj_count_before, max_number * 7)
 
 
 if __name__ == "__main__":

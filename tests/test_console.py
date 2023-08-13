@@ -186,8 +186,6 @@ class TestHBNBCommand_create(unittest.TestCase):
             self.assertEqual(expected, console.getvalue().strip())
 
 
-
-
 class TestHBNBCommand_show(unittest.TestCase):
     """Tests for show command of the HBNB console"""
 
@@ -326,8 +324,14 @@ class TestHBNBCommand_destroy(unittest.TestCase):
         expected = "** class doesn't exist **"
         with patch("sys.stdout", new=StringIO()) as console:
             self.assertFalse(HBNBCommand().onecmd("destroy MyModel"))
-            # self.assertFalse(HBNBCommand().onecmd("MyModel.destroy"))
             self.assertEqual(expected, console.getvalue().strip())
+
+    def test_destroy_invalid_class_using_dot_notation(self):
+        expected = "** class doesn't exist **"
+        with patch("sys.stdout", new=StringIO()) as console:
+            self.assertFalse(HBNBCommand().onecmd("MyModel.destroy()"))
+            self.assertEqual(expected, console.getvalue().strip())
+
 
     def test_destroy_id_missing_space_notation(self):
         expected = "** instance id missing **"
@@ -390,6 +394,16 @@ class TestHBNBCommand_destroy(unittest.TestCase):
 class TestHBNBCommand_all(unittest.TestCase):
     """Tests for all command of the HBNB console."""
 
+    @classmethod
+    def setUpClass(cls):
+        FileStorage.__objects = {}
+
+    @classmethod
+    def tearDownClass(cls):
+        file = FileStorage._FileStorage__file_path
+        if file:
+            remove_file(file)
+
     @patch("sys.stdout", new_callable=StringIO)
     def setUp(self, mock_stdout):
         """Create all models instances for testing"""
@@ -415,17 +429,27 @@ class TestHBNBCommand_all(unittest.TestCase):
             "Review",
             "Place",
         ]
-        for model in models_list:
-            with self.subTest(model=model):
-                with patch("sys.stdout", new=StringIO()) as console:
-                    self.assertFalse(HBNBCommand().onecmd("all"))
+        with patch("sys.stdout", new=StringIO()) as console:
+            self.assertFalse(HBNBCommand().onecmd("all"))
+            for model in models_list:
+                with self.subTest(model=model):
                     self.assertIn(model, console.getvalue().strip())
 
-    def test_all_invalid_class(self):
-        expected = "** class doesn't exist **"
+    def test_all_single_object_dot_notation(self):
+        models_list = [
+            "BaseModel",
+            "State",
+            "User",
+            "Amenity",
+            "City",
+            "Review",
+            "Place",
+        ]
         with patch("sys.stdout", new=StringIO()) as console:
-            self.assertFalse(HBNBCommand().onecmd("all MyModel"))
-            self.assertEqual(expected, console.getvalue().strip())
+            for Klass in models_list:
+                with self.subTest():
+                    self.assertFalse(HBNBCommand().onecmd(f"all.{Klass}"))
+                    self.assertGreaterEqual(len(console.getvalue().strip()), 1)
 
     def test_all_single_object_space_notation(self):
         """
@@ -446,6 +470,52 @@ class TestHBNBCommand_all(unittest.TestCase):
                 with patch("sys.stdout", new=StringIO()) as console:
                     self.assertFalse(HBNBCommand().onecmd(f"all {model}"))
                     self.assertIn(f"{model}", console.getvalue().strip())
+
+    def test_all_invalid_class(self):
+        expected = "** class doesn't exist **"
+        with patch("sys.stdout", new=StringIO()) as console:
+            self.assertFalse(HBNBCommand().onecmd("all MyModel"))
+            self.assertEqual(expected, console.getvalue().strip())
+
+
+class TestHBNBCommand_update(unittest.TestCase):
+    """Test Update fonction"""
+    @classmethod
+    def setUpClass(cls):
+        FileStorage.__objects = {}
+
+    @classmethod
+    def tearDownClass(cls):
+        file = FileStorage._FileStorage__file_path
+        if file:
+            remove_file(file)
+
+    @patch("sys.stdout", new_callable=StringIO)
+    def setUp(self, mock_stdout):
+        """Create all models instances for testing"""
+        models_list = [
+            "create BaseModel",
+            "create State",
+            "create User",
+            "create Amenity",
+            "create City",
+            "create Review",
+            "create Place",
+        ]
+        for model in models_list:
+            HBNBCommand().onecmd(model)
+
+    def test_update_class_missing(self):
+        output = "** class doesn't exist **"
+        with patch('sys.stdout', new_callable=StringIO) as console:
+            self.assertFalse(HBNBCommand().onecmd("update"))
+            self.assertTrue(output, console.getvalue().strip())
+
+    def test_update_invalid_class(self):
+        output = "** class doesn't exist **"
+        with patch('sys.stdout', new_callable=StringIO) as console:
+            self.assertFalse(HBNBCommand().onecmd("update MyModel"))
+            self.assertTrue(output, console.getvalue().strip())
 
 
 if __name__ == "__main__":

@@ -51,15 +51,64 @@ class TestHBNBCommand_prompting(unittest.TestCase):
 class TestHBNBCommand_help(unittest.TestCase):
     """Tests for help messages of the HBNB console."""
 
+    def test_help(self):
+        with patch("sys.stdout", new=StringIO()) as console:
+            self.assertFalse(HBNBCommand().onecmd("help"))
+            output = "Documented commands (type help <topic>):"
+            self.assertIn(output, console.getvalue())
+            self.assertIn("EOF", console.getvalue())
+            self.assertIn("create", console.getvalue())
+            self.assertIn("show", console.getvalue())
+            self.assertIn("all", console.getvalue())
+            self.assertIn("destroy", console.getvalue())
+            self.assertIn("update", console.getvalue())
+            self.assertIn("count", console.getvalue())
+            self.assertIn("help", console.getvalue())
+            self.assertIn("quit", console.getvalue())
+
     def test_help_quit(self):
         with patch("sys.stdout", new=StringIO()) as console:
             self.assertFalse(HBNBCommand().onecmd("help quit"))
 
-    @patch("sys.stdout", new_callable=StringIO)
-    def test_help(self, mock_stdout):
-        self.assertFalse(HBNBCommand().onecmd("help"))
-        output = "Documented commands (type help <topic>):"
-        self.assertIn(output, mock_stdout.getvalue())
+    def test_help_create(self):
+        with patch("sys.stdout", new=StringIO()) as console:
+            self.assertFalse(HBNBCommand().onecmd("help create"))
+
+    def test_help_update(self):
+        with patch("sys.stdout", new=StringIO()) as console:
+            self.assertFalse(HBNBCommand().onecmd("help update"))
+
+    def test_help_EOF(self):
+        with patch("sys.stdout", new=StringIO()) as console:
+            self.assertFalse(HBNBCommand().onecmd("help EOF"))
+
+    def test_help_count(self):
+        with patch("sys.stdout", new=StringIO()) as console:
+            self.assertFalse(HBNBCommand().onecmd("help count"))
+
+    def test_help_show(self):
+        with patch("sys.stdout", new=StringIO()) as console:
+            self.assertFalse(HBNBCommand().onecmd("help show"))
+
+    def test_help_all(self):
+        with patch("sys.stdout", new=StringIO()) as console:
+            self.assertFalse(HBNBCommand().onecmd("help all"))
+
+    def test_help_destroy(self):
+        with patch("sys.stdout", new=StringIO()) as console:
+            self.assertFalse(HBNBCommand().onecmd("help destroy"))
+
+
+class TestHBNBCommand_exit(unittest.TestCase):
+    """Tests for exiting the HBNB console."""
+
+    def test_EOF_exits(self):
+        with patch("sys.stdout", new=StringIO()) as console:
+            self.assertTrue(HBNBCommand().onecmd("EOF"))
+
+    def test_quit_exits(self):
+        with patch("sys.stdout", new=StringIO()) as console:
+            self.assertTrue(HBNBCommand().onecmd("quit"))
 
 
 class TestHBNBCommand_create(unittest.TestCase):
@@ -69,54 +118,24 @@ class TestHBNBCommand_create(unittest.TestCase):
     def setUpClass(cls):
         FileStorage.__objects = {}
 
-    def test_create_object_using_BaseModel_class(self):
-        with patch("sys.stdout", new=StringIO()) as console:
-            self.assertFalse(HBNBCommand().onecmd("create BaseModel"))
-            self.assertLess(0, len(console.getvalue().strip()))
-            test_k = "BaseModel.{}".format(console.getvalue().strip())
-            self.assertIn(test_k, storage.all().keys())
-
-    def test_create_object_using_Review_class(self):
-        with patch("sys.stdout", new=StringIO()) as console:
-            self.assertFalse(HBNBCommand().onecmd("create Review"))
-            self.assertLess(0, len(console.getvalue().strip()))
-            test_k = "Review.{}".format(console.getvalue().strip())
-            self.assertIn(test_k, storage.all().keys())
-
-    def test_create_object_using_User_class(self):
-        with patch("sys.stdout", new=StringIO()) as console:
-            self.assertFalse(HBNBCommand().onecmd("create User"))
-            self.assertLess(0, len(console.getvalue().strip()))
-            test_k = "User.{}".format(console.getvalue().strip())
-            self.assertIn(test_k, storage.all().keys())
-
-    def test_create_object_using_Place_class(self):
-        with patch("sys.stdout", new=StringIO()) as console:
-            self.assertFalse(HBNBCommand().onecmd("create Place"))
-            self.assertLess(0, len(console.getvalue().strip()))
-            test_k = "Place.{}".format(console.getvalue().strip())
-            self.assertIn(test_k, storage.all().keys())
-
-    def test_create_object_using_State_class(self):
-        with patch("sys.stdout", new=StringIO()) as console:
-            self.assertFalse(HBNBCommand().onecmd("create State"))
-            self.assertLess(0, len(console.getvalue().strip()))
-            test_k = "State.{}".format(console.getvalue().strip())
-            self.assertIn(test_k, storage.all().keys())
-
-    def test_create_object_using_Amenity_class(self):
-        with patch("sys.stdout", new=StringIO()) as console:
-            self.assertFalse(HBNBCommand().onecmd("create Amenity"))
-            self.assertLess(0, len(console.getvalue().strip()))
-            test_k = "Amenity.{}".format(console.getvalue().strip())
-            self.assertIn(test_k, storage.all().keys())
-
-    def test_create_object_using_City_class(self):
-        with patch("sys.stdout", new=StringIO()) as console:
-            self.assertFalse(HBNBCommand().onecmd("create City"))
-            self.assertLess(0, len(console.getvalue().strip()))
-            test_k = "City.{}".format(console.getvalue().strip())
-            self.assertIn(test_k, storage.all().keys())
+    def test_create_object(self):
+        models_list = [
+        "create BaseModel",
+        "create Review",
+        "create User",
+        "create Place",
+        "create Amenity",
+        "create City",
+        "create State",
+        ]
+        for prompt in models_list:
+            with self.subTest():
+                with patch("sys.stdout", new=StringIO()) as console:
+                    self.assertFalse(HBNBCommand().onecmd(prompt))
+                    self.assertLess(0, len(console.getvalue().strip()))
+                    Klass = prompt.split(" ")[1]
+                    test_k = "{}.{}".format(Klass,console.getvalue().strip())
+                    self.assertIn(test_k, storage.all().keys())
 
     def test_create_invalid_class(self):
         expected = "** class doesn't exist **"
@@ -130,7 +149,27 @@ class TestHBNBCommand_create(unittest.TestCase):
             self.assertFalse(HBNBCommand().onecmd("create"))
             self.assertEqual(expected, console.getvalue().strip())
 
-    def test_create_invalid_syntax(self):
+
+class TestHBNBCommand_create_using_dot_notation(unittest.TestCase):
+    """Tests for create command of the HBNB console."""
+
+    @classmethod
+    def setUpClass(cls):
+        FileStorage.__objects = {}
+
+    def test_create_object(self):
+        models_list = [
+        "BaseModel.create()",
+        "Review.create()",
+        "User.create()",
+        "Place.create()",
+        "Amenity.create()",
+        "City.create()",
+        "BaseModel.create()",
+        ]
+
+
+    def test_create_using_dot_notation(self):
         expected = "*** Unknown syntax: BaseModel.create()"
         with patch("sys.stdout", new=StringIO()) as console:
             self.assertFalse(HBNBCommand().onecmd("BaseModel.create()"))

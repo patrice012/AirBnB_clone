@@ -64,16 +64,20 @@ class HBNBCommand(cmd.Cmd):
         import re
 
         match = re.search(r"\.", arg)
-        if match is None:
-            print("*** Unknown 000 syntax: {}".format(arg))
-            return False
-        cmd_args = [arg[:match.span()[0]], arg[match.span()[1]:]]
-        match = re.search(r"\((.*?)\)", cmd_args[1])
         if match is not None:
-            command = [cmd_args[1][: match.span()[0]], match.group()[1:-1]]
-            call = "{} {}".format(cmd_args[0], command[1].strip(","))
-            prompt = f"{command[0].strip(',')} {call.strip(',')}"
-            HBNBCommand().onecmd(prompt)
+            cmd_args = [arg[:match.span()[0]], arg[match.span()[1]:]]
+            if not cmd_args[0]:
+                print("** class name missing **")
+                return False
+            match = re.search(r"\((.*?)\)", cmd_args[1])
+            if match is not None:
+                command = [cmd_args[1][: match.span()[0]], match.group()[1:-1]]
+                call = "{} {}".format(cmd_args[0], command[1].strip(","))
+                prompt = f"{command[0].strip(',')} {call.strip(',')}"
+                HBNBCommand().onecmd(prompt)
+                return
+        print("*** Unknown syntax: {}".format(arg))
+        return False
 
     def do_create(self, cls_name):
         """

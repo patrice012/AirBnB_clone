@@ -167,17 +167,17 @@ class HBNBCommand(cmd.Cmd):
         """
         cmd_args = parse_arguments(arg)
         storage_objects = storage.all()
-
         if len(cmd_args) == 0:
             print("** class name missing **")
             return False
-        elif cmd_args[0] not in self.object_classes.keys():
+        elif cmd_args[0].strip(",") not in self.object_classes.keys():
             print("** class doesn't exist **")
             return False
         elif len(cmd_args) == 1:
             print("** instance id missing **")
             return False
-        elif f"{cmd_args[0]}.{cmd_args[1]}" not in storage.all():
+        elif f"{cmd_args[0].strip(',')}.{cmd_args[1].strip(',')}" \
+             not in storage.all():
             print("** no instance found **")
             return False
         elif len(cmd_args) == 2:
@@ -190,22 +190,23 @@ class HBNBCommand(cmd.Cmd):
                 print("** value missing **")
                 return False
 
+        instance_repr = f"{cmd_args[0].strip(',')}.{cmd_args[1].strip(',')}"
         if len(cmd_args) == 4:
             setattr(
-                storage_objects[f"{cmd_args[0]}.{cmd_args[1]}"],
-                cmd_args[2],
-                cmd_args[3],
+                storage_objects[instance_repr],
+                cmd_args[2].strip(","),
+                cmd_args[3].strip(","),
             )
         elif type(eval(cmd_args[2])) == dict:
             for k, v in eval(cmd_args[2]).items():
-                setattr(storage_objects[f"{cmd_args[0]}.{cmd_args[1]}"], k, v)
+                setattr(storage_objects[instance_repr], k, v)
         else:
             setattr(
-                storage_objects[f"{cmd_args[0]}.{cmd_args[1]}"],
-                cmd_args[2],
-                cmd_args[3],
+                storage_objects[instance_repr],
+                cmd_args[2].strip(","),
+                cmd_args[3].strip(","),
             )
-        storage_objects[f"{cmd_args[0]}.{cmd_args[1]}"].save()
+        storage_objects[instance_repr].save()
 
     def do_count(self, prompt):
         """

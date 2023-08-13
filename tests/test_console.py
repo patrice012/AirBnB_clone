@@ -682,12 +682,20 @@ class TestHBNBCommand_update(unittest.TestCase):
         for model in models_list:
             Klass = model.split(" ")[1].strip()
             _id = self.objects_mapping[Klass]
-            _input = f"{Klass}.update({_id} test alx-se)"
-            with patch("sys.stdout", new=StringIO()) as console:
-                HBNBCommand().onecmd(_input)
-                test_dict = storage.all()[f"{Klass}.{_id}"].__dict__
-                self.assertTrue("test" in test_dict.keys())
-                self.assertEqual(test_dict["test"], "alx-se")
+            _input = []
+            _input.append(f"{Klass}.update({_id}, test, alx-se)")
+            _input.append(f'{Klass}.update({_id}, "first_name", "John")')
+            _input.append(f'{Klass}.update({_id}, "age", 89)')
+            for arg in _input:
+                with patch("sys.stdout", new=StringIO()) as console:
+                    HBNBCommand().onecmd(arg)
+            test_dict = storage.all()[f"{Klass}.{_id}"].__dict__
+            self.assertTrue("test" in test_dict.keys())
+            self.assertEqual(test_dict["test"], "alx-se")
+            self.assertTrue("first_name" in test_dict.keys())
+            self.assertEqual(test_dict["first_name"], "John")
+            self.assertTrue("age" in test_dict.keys())
+            self.assertEqual(test_dict["age"], "89")
 
     def test_update_for_all_classes_using_dict_space_notation(self):
         for model in self.models_list:
@@ -707,7 +715,7 @@ class TestHBNBCommand_update(unittest.TestCase):
         for model in self.models_list:
             Klass = model.split(" ")[1].strip()
             _id = self.objects_mapping[Klass]
-            attr_dict = {"first_name": "John", "age": 89}
+            attr_dict = {"first_name": "John", "age": 89, "alx": "funny"}
             _input = f"{Klass}.update({_id} {attr_dict})"
             with patch("sys.stdout", new=StringIO()) as console:
                 HBNBCommand().onecmd(_input)

@@ -58,13 +58,21 @@ class TestHBNBCommand_help(unittest.TestCase):
             self.assertIn(output, console.getvalue())
 
     def test_functions_in_help_command(self):
-        list_of_function = ["EOF", "create","show","all", "destroy", "count", "help", "quit"]
-        with patch('sys.stdout', new=StringIO()) as console:
-            HBNBCommand().onecmd('help')
+        list_of_function = [
+            "EOF",
+            "create",
+            "show",
+            "all",
+            "destroy",
+            "count",
+            "help",
+            "quit",
+        ]
+        with patch("sys.stdout", new=StringIO()) as console:
+            HBNBCommand().onecmd("help")
             for function in list_of_function:
                 with self.subTest():
                     self.assertIn(function, console.getvalue())
-
 
     def test_help_quit(self):
         with patch("sys.stdout", new=StringIO()) as console:
@@ -86,30 +94,25 @@ class TestHBNBCommand_help(unittest.TestCase):
             self.assertFalse(HBNBCommand().onecmd("help EOF"))
             self.assertTrue(console.getvalue().strip())
 
-
     def test_help_count(self):
         with patch("sys.stdout", new=StringIO()) as console:
             self.assertFalse(HBNBCommand().onecmd("help count"))
             self.assertTrue(console.getvalue().strip())
-
 
     def test_help_show(self):
         with patch("sys.stdout", new=StringIO()) as console:
             self.assertFalse(HBNBCommand().onecmd("help show"))
             self.assertTrue(console.getvalue().strip())
 
-
     def test_help_all(self):
         with patch("sys.stdout", new=StringIO()) as console:
             self.assertFalse(HBNBCommand().onecmd("help all"))
             self.assertTrue(console.getvalue().strip())
 
-
     def test_help_destroy(self):
         with patch("sys.stdout", new=StringIO()) as console:
             self.assertFalse(HBNBCommand().onecmd("help destroy"))
             self.assertTrue(console.getvalue().strip())
-            
 
 
 class TestHBNBCommand_exit(unittest.TestCase):
@@ -139,13 +142,13 @@ class TestHBNBCommand_create(unittest.TestCase):
 
     def test_create_object(self):
         models_list = [
-        "create BaseModel",
-        "create Review",
-        "create User",
-        "create Place",
-        "create Amenity",
-        "create City",
-        "create State",
+            "create BaseModel",
+            "create Review",
+            "create User",
+            "create Place",
+            "create Amenity",
+            "create City",
+            "create State",
         ]
         for prompt in models_list:
             with self.subTest():
@@ -153,18 +156,18 @@ class TestHBNBCommand_create(unittest.TestCase):
                     self.assertFalse(HBNBCommand().onecmd(prompt))
                     self.assertLess(0, len(console.getvalue().strip()))
                     Klass = prompt.split(" ")[1]
-                    test_k = "{}.{}".format(Klass,console.getvalue().strip())
+                    test_k = "{}.{}".format(Klass, console.getvalue().strip())
                     self.assertIn(test_k, storage.all().keys())
 
     def test_create_using_dot_notation(self):
         models_list = [
-        "BaseModel.create()",
-        "Review.create()",
-        "User.create()",
-        "Place.create()",
-        "Amenity.create()",
-        "City.create()",
-        "BaseModel.create()",
+            "BaseModel.create()",
+            "Review.create()",
+            "User.create()",
+            "Place.create()",
+            "Amenity.create()",
+            "City.create()",
+            "BaseModel.create()",
         ]
         for prompt in models_list:
             with self.subTest():
@@ -172,7 +175,7 @@ class TestHBNBCommand_create(unittest.TestCase):
                     self.assertFalse(HBNBCommand().onecmd(prompt))
                     self.assertLess(0, len(console.getvalue().strip()))
                     Klass = prompt.split(" ")[1]
-                    test_k = "{}.{}".format(Klass,console.getvalue().strip())
+                    test_k = "{}.{}".format(Klass, console.getvalue().strip())
                     self.assertIn(test_k, storage.all().keys())
 
     def test_create_invalid_class(self):
@@ -332,7 +335,7 @@ class TestHBNBCommand_show(unittest.TestCase):
                 model = prompt.split()[1]
                 with patch("sys.stdout", new=StringIO()) as console:
                     obj = storage.all()["{}.{}".format(model, object_id)]
-                    command = "{}.{}({})".format(model,'show', object_id)
+                    command = "{}.{}({})".format(model, "show", object_id)
                     self.assertFalse(HBNBCommand().onecmd(command))
                     self.assertEqual(obj.__str__(), console.getvalue().strip())
 
@@ -379,7 +382,6 @@ class TestHBNBCommand_destroy(unittest.TestCase):
             self.assertFalse(HBNBCommand().onecmd("MyModel.destroy()"))
             self.assertEqual(expected, console.getvalue().strip())
 
-
     def test_destroy_id_missing_space_notation(self):
         expected = "** instance id missing **"
         models_list = [
@@ -411,7 +413,7 @@ class TestHBNBCommand_destroy(unittest.TestCase):
         for prompt in models_list:
             with self.subTest(prompt=prompt):
                 with patch("sys.stdout", new=StringIO()) as console:
-                    func, Klass = prompt.split(' ')
+                    func, Klass = prompt.split(" ")
                     _input = f"{Klass.strip()}.{func.strip()}()"
                     self.assertFalse(HBNBCommand().onecmd(_input))
                     self.assertEqual(expected, console.getvalue().strip())
@@ -447,7 +449,7 @@ class TestHBNBCommand_destroy(unittest.TestCase):
         for prompt in models_list:
             with self.subTest(prompt=prompt):
                 with patch("sys.stdout", new=StringIO()) as console:
-                    func, Klass, _id = prompt.split(' ')
+                    func, Klass, _id = prompt.split(" ")
                     _input = f"{Klass.strip()}.{func.strip()}({_id.strip()})"
                     self.assertFalse(HBNBCommand().onecmd(prompt))
                     self.assertEqual(expected, console.getvalue().strip())
@@ -497,7 +499,6 @@ class TestHBNBCommand_destroy(unittest.TestCase):
                     command = "{}.destroy({})".format(model, object_id)
                     self.assertFalse(HBNBCommand().onecmd(command))
                     self.assertNotIn(obj, storage.all())
-
 
 
 class TestHBNBCommand_all(unittest.TestCase):
@@ -589,6 +590,7 @@ class TestHBNBCommand_all(unittest.TestCase):
 
 class TestHBNBCommand_update(unittest.TestCase):
     """Test Update fonction"""
+
     @classmethod
     def setUpClass(cls):
         FileStorage.__objects = {}
@@ -611,7 +613,7 @@ class TestHBNBCommand_update(unittest.TestCase):
             "create Place",
         ]
         for prompt in models_list:
-            with patch('sys.stdout', new=StringIO()) as console:
+            with patch("sys.stdout", new=StringIO()) as console:
                 HBNBCommand().onecmd(prompt)
                 object_id = console.getvalue().strip()
                 Klass = prompt.split(" ")[1].strip()
@@ -625,78 +627,82 @@ class TestHBNBCommand_update(unittest.TestCase):
 
     def test_update_class_missing_using_space_noation(self):
         output = "** class name missing **"
-        with patch('sys.stdout', new=StringIO()) as console:
+        with patch("sys.stdout", new=StringIO()) as console:
             self.assertFalse(HBNBCommand().onecmd("update"))
             self.assertTrue(output, console.getvalue().strip())
 
     def test_update_class_missing_using_dot_noation(self):
         output = "** class name missing **"
-        with patch('sys.stdout', new=StringIO()) as console:
+        with patch("sys.stdout", new=StringIO()) as console:
             self.assertFalse(HBNBCommand().onecmd(".update()"))
             self.assertTrue(output, console.getvalue().strip())
 
     def test_update_invalid_class_space_notation(self):
         output = "** class doesn't exist **"
-        with patch('sys.stdout', new=StringIO()) as console:
+        with patch("sys.stdout", new=StringIO()) as console:
             self.assertFalse(HBNBCommand().onecmd("update MyModel"))
             self.assertTrue(output, console.getvalue().strip())
 
     def test_update_invalid_class_dot_notation(self):
         output = "** class doesn't exist **"
-        with patch('sys.stdout', new=StringIO()) as console:
+        with patch("sys.stdout", new=StringIO()) as console:
             self.assertFalse(HBNBCommand().onecmd("MyModel.update()"))
             self.assertTrue(output, console.getvalue().strip())
 
     def test_update_id_missing_space_notation(self):
         output = "** instance id missing **"
-        with patch('sys.stdout', new=StringIO()) as console:
+        with patch("sys.stdout", new=StringIO()) as console:
             self.assertFalse(HBNBCommand().onecmd("update BaseModel"))
             self.assertTrue(output, console.getvalue().strip())
 
     def test_update_id_missing_dot_notation(self):
         output = "** instance id missing **"
-        with patch('sys.stdout', new=StringIO()) as console:
+        with patch("sys.stdout", new=StringIO()) as console:
             self.assertFalse(HBNBCommand().onecmd("BaseModel.update()"))
             self.assertTrue(output, console.getvalue().strip())
 
     def test_update_instance_not_found_using_space_notation(self):
         output = "** no instance found **"
-        with patch('sys.stdout', new=StringIO()) as console:
+        with patch("sys.stdout", new=StringIO()) as console:
             self.assertFalse(HBNBCommand().onecmd("update BaseModel 121212"))
             self.assertTrue(output, console.getvalue().strip())
 
     def test_update_instance_not_found_missing_dot_notation(self):
         output = "** no instance found **"
-        with patch('sys.stdout', new=StringIO()) as console:
+        with patch("sys.stdout", new=StringIO()) as console:
             self.assertFalse(HBNBCommand().onecmd("BaseModel.update(121212)"))
             self.assertTrue(output, console.getvalue().strip())
 
     def test_update_attribute_name_missing_using_space_notation(self):
         output = "** attribute name missing **"
-        obj_id = self.objects_mapping['BaseModel']
-        with patch('sys.stdout', new=StringIO()) as console:
-            self.assertFalse(HBNBCommand().onecmd(f"update BaseModel {obj_id}"))
+        obj_id = self.objects_mapping["BaseModel"]
+        with patch("sys.stdout", new=StringIO()) as console:
+            _input = f"update BaseModel {obj_id}"
+            self.assertFalse(HBNBCommand().onecmd(_input))
             self.assertTrue(output, console.getvalue().strip())
 
     def test_update_attribute_name_missing_dot_notation(self):
         output = "** attribute name missing **"
-        obj_id = self.objects_mapping['BaseModel']
-        with patch('sys.stdout', new=StringIO()) as console:
-            self.assertFalse(HBNBCommand().onecmd(f"BaseModel.update({obj_id})"))
+        obj_id = self.objects_mapping["BaseModel"]
+        with patch("sys.stdout", new=StringIO()) as console:
+            _input = f"BaseModel.update({obj_id})"
+            self.assertFalse(HBNBCommand().onecmd(_input))
             self.assertTrue(output, console.getvalue().strip())
 
     def test_update_value_for_attribute_missing_using_space_notation(self):
         output = "** attribute name missing **"
-        obj_id = self.objects_mapping['BaseModel']
-        with patch('sys.stdout', new=StringIO()) as console:
-            self.assertFalse(HBNBCommand().onecmd(f"update BaseModel {obj_id} test"))
+        obj_id = self.objects_mapping["BaseModel"]
+        with patch("sys.stdout", new=StringIO()) as console:
+            _input = f"update BaseModel {obj_id} test"
+            self.assertFalse(HBNBCommand().onecmd(_input))
             self.assertTrue(output, console.getvalue().strip())
 
     def test_update_value_for_attribute_missing_using_dot_notation(self):
         output = "** attribute name missing **"
-        obj_id = self.objects_mapping['BaseModel']
-        with patch('sys.stdout', new=StringIO()) as console:
-            self.assertFalse(HBNBCommand().onecmd(f"BaseModel.update({obj_id} test)"))
+        obj_id = self.objects_mapping["BaseModel"]
+        with patch("sys.stdout", new=StringIO()) as console:
+            _input = f"BaseModel.update({obj_id} test)"
+            self.assertFalse(HBNBCommand().onecmd(_input))
             self.assertTrue(output, console.getvalue().strip())
 
     def test_update_for_all_classes_using_space_notation(self):
@@ -704,34 +710,34 @@ class TestHBNBCommand_update(unittest.TestCase):
         for model in models_list:
             Klass = model.split(" ")[1].strip()
             _id = self.objects_mapping[Klass]
-            _input = f'update {Klass} {_id} email aibnb@mail.com'
-            with patch('sys.stdout', new=StringIO()) as console:
+            _input = f"update {Klass} {_id} email aibnb@mail.com"
+            with patch("sys.stdout", new=StringIO()) as console:
                 HBNBCommand().onecmd(_input)
-                test_dict = storage.all()[f'{Klass}.{_id}'].__dict__
-                self.assertTrue('email' in test_dict.keys())
-                self.assertEqual(test_dict['email'], 'aibnb@mail.com')
+                test_dict = storage.all()[f"{Klass}.{_id}"].__dict__
+                self.assertTrue("email" in test_dict.keys())
+                self.assertEqual(test_dict["email"], "aibnb@mail.com")
 
     def test_update_for_all_classes_using_dot_notation(self):
         models_list = self.models_list
         for model in models_list:
             Klass = model.split(" ")[1].strip()
             _id = self.objects_mapping[Klass]
-            _input = f'{Klass}.update({_id} test alx-se)'
-            with patch('sys.stdout', new=StringIO()) as console:
+            _input = f"{Klass}.update({_id} test alx-se)"
+            with patch("sys.stdout", new=StringIO()) as console:
                 HBNBCommand().onecmd(_input)
-                test_dict = storage.all()[f'{Klass}.{_id}'].__dict__
-                self.assertTrue('test' in test_dict.keys())
-                self.assertEqual(test_dict['test'], 'alx-se')
+                test_dict = storage.all()[f"{Klass}.{_id}"].__dict__
+                self.assertTrue("test" in test_dict.keys())
+                self.assertEqual(test_dict["test"], "alx-se")
 
     def test_update_for_all_classes_using_dict_space_notation(self):
         for model in self.models_list:
             Klass = model.split(" ")[1].strip()
             _id = self.objects_mapping[Klass]
-            attr_dict = {'first_name': "John", "age": 89}
-            _input = f'update {Klass} {_id} {attr_dict}'
-            with patch('sys.stdout', new=StringIO()) as console:
+            attr_dict = {"first_name": "John", "age": 89}
+            _input = f"update {Klass} {_id} {attr_dict}"
+            with patch("sys.stdout", new=StringIO()) as console:
                 HBNBCommand().onecmd(_input)
-                test_dict = storage.all()[f'{Klass}.{_id}'].__dict__
+                test_dict = storage.all()[f"{Klass}.{_id}"].__dict__
                 with self.subTest():
                     for key, value in attr_dict.items():
                         self.assertTrue(key in test_dict.keys())
@@ -741,11 +747,11 @@ class TestHBNBCommand_update(unittest.TestCase):
         for model in self.models_list:
             Klass = model.split(" ")[1].strip()
             _id = self.objects_mapping[Klass]
-            attr_dict = {'first_name': "John", "age": 89}
-            _input = f'{Klass}.update({_id} {attr_dict})'
-            with patch('sys.stdout', new=StringIO()) as console:
+            attr_dict = {"first_name": "John", "age": 89}
+            _input = f"{Klass}.update({_id} {attr_dict})"
+            with patch("sys.stdout", new=StringIO()) as console:
                 HBNBCommand().onecmd(_input)
-                test_dict = storage.all()[f'{Klass}.{_id}'].__dict__
+                test_dict = storage.all()[f"{Klass}.{_id}"].__dict__
                 with self.subTest():
                     for key, value in attr_dict.items():
                         self.assertTrue(key in test_dict.keys())

@@ -56,47 +56,60 @@ class TestHBNBCommand_help(unittest.TestCase):
             self.assertFalse(HBNBCommand().onecmd("help"))
             output = "Documented commands (type help <topic>):"
             self.assertIn(output, console.getvalue())
-            self.assertIn("EOF", console.getvalue())
-            self.assertIn("create", console.getvalue())
-            self.assertIn("show", console.getvalue())
-            self.assertIn("all", console.getvalue())
-            self.assertIn("destroy", console.getvalue())
-            self.assertIn("update", console.getvalue())
-            self.assertIn("count", console.getvalue())
-            self.assertIn("help", console.getvalue())
-            self.assertIn("quit", console.getvalue())
+
+    def test_functions_in_help_command(self):
+        list_of_function = ["EOF", "create","show","all", "destroy", "count", "help", "quit"]
+        with patch('sys.stdout', new=StringIO()) as console:
+            HBNBCommand().onecmd('help')
+            for function in list_of_function:
+                with self.subTest():
+                    self.assertIn(function, console.getvalue())
+
 
     def test_help_quit(self):
         with patch("sys.stdout", new=StringIO()) as console:
             self.assertFalse(HBNBCommand().onecmd("help quit"))
+            self.assertTrue(console.getvalue().strip())
 
     def test_help_create(self):
         with patch("sys.stdout", new=StringIO()) as console:
             self.assertFalse(HBNBCommand().onecmd("help create"))
+            self.assertTrue(console.getvalue().strip())
 
     def test_help_update(self):
         with patch("sys.stdout", new=StringIO()) as console:
             self.assertFalse(HBNBCommand().onecmd("help update"))
+            self.assertTrue(console.getvalue().strip())
 
     def test_help_EOF(self):
         with patch("sys.stdout", new=StringIO()) as console:
             self.assertFalse(HBNBCommand().onecmd("help EOF"))
+            self.assertTrue(console.getvalue().strip())
+
 
     def test_help_count(self):
         with patch("sys.stdout", new=StringIO()) as console:
             self.assertFalse(HBNBCommand().onecmd("help count"))
+            self.assertTrue(console.getvalue().strip())
+
 
     def test_help_show(self):
         with patch("sys.stdout", new=StringIO()) as console:
             self.assertFalse(HBNBCommand().onecmd("help show"))
+            self.assertTrue(console.getvalue().strip())
+
 
     def test_help_all(self):
         with patch("sys.stdout", new=StringIO()) as console:
             self.assertFalse(HBNBCommand().onecmd("help all"))
+            self.assertTrue(console.getvalue().strip())
+
 
     def test_help_destroy(self):
         with patch("sys.stdout", new=StringIO()) as console:
             self.assertFalse(HBNBCommand().onecmd("help destroy"))
+            self.assertTrue(console.getvalue().strip())
+            
 
 
 class TestHBNBCommand_exit(unittest.TestCase):
@@ -255,6 +268,23 @@ class TestHBNBCommand_show(unittest.TestCase):
             "show City 1",
             "show Review 1",
             "show Place 1",
+        ]
+        for prompt in models_list:
+            with self.subTest(prompt=prompt):
+                with patch("sys.stdout", new=StringIO()) as console:
+                    self.assertFalse(HBNBCommand().onecmd(prompt))
+                    self.assertEqual(expected, console.getvalue().strip())
+
+    def test_show_no_instance_found_dot_notation(self):
+        expected = "** no instance found **"
+        models_list = [
+            "BaseModel.show(1)",
+            "State.show(1)",
+            "User.show(1)",
+            "Amenity.show(1)",
+            "City.show(1)",
+            "Review.show(1)",
+            "Place.show(1)",
         ]
         for prompt in models_list:
             with self.subTest(prompt=prompt):

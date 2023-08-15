@@ -781,7 +781,28 @@ class TestHBNBCommand_count(unittest.TestCase):
             with patch('sys.stdout', new=StringIO()) as console:
                 HBNBCommand().onecmd(f"{model}.count()")
                 count_after = console.getvalue().strip()
-                self.assertEqual(int(count_before) - 1, int(count_after))
+                self.assertEqual(int(count_after) - 1, int(count_before))
+
+    def test_count_single_object_using_space_notation(self):
+        models_list = [
+            "create BaseModel",
+            "create State",
+            "create User",
+            "create Amenity",
+            "create City",
+            "create Review",
+            "create Place",
+        ]
+        for prompt in models_list:
+            model = prompt.split()[1].strip()
+            with patch('sys.stdout', new=StringIO()) as console:
+                HBNBCommand().onecmd(f"count {model}")
+                count_before = console.getvalue().strip()
+                HBNBCommand().onecmd(f'create {model}')
+            with patch('sys.stdout', new=StringIO()) as console:
+                HBNBCommand().onecmd(f"count {model}")
+                count_after = console.getvalue().strip()
+                self.assertEqual(int(count_after) - 1, int(count_before))
 
 
 if __name__ == "__main__":

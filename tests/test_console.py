@@ -525,9 +525,9 @@ class TestHBNBCommand_all(unittest.TestCase):
             "Review",
             "Place",
         ]
-        with patch("sys.stdout", new=StringIO()) as console:
-            for Klass in models_list:
-                with self.subTest():
+        for Klass in models_list:
+            with self.subTest():
+                with patch("sys.stdout", new=StringIO()) as console:
                     self.assertFalse(HBNBCommand().onecmd(f"{Klass}.all()"))
                     self.assertGreaterEqual(len(console.getvalue().strip()), 1)
 

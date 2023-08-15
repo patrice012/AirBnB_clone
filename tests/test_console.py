@@ -528,7 +528,7 @@ class TestHBNBCommand_all(unittest.TestCase):
         with patch("sys.stdout", new=StringIO()) as console:
             for Klass in models_list:
                 with self.subTest():
-                    self.assertFalse(HBNBCommand().onecmd(f"all.{Klass}"))
+                    self.assertFalse(HBNBCommand().onecmd(f"{Klass}.all()"))
                     self.assertGreaterEqual(len(console.getvalue().strip()), 1)
 
     def test_single_class_objects_space_notation(self):

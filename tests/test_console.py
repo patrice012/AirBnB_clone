@@ -762,6 +762,27 @@ class TestHBNBCommand_count(unittest.TestCase):
         obj_count_after = len(storage.all())
         self.assertEqual(obj_count_after - obj_count_before, max_number * 7)
 
+    def test_count_single_object_using_dot_notation(self):
+        models_list = [
+            "create BaseModel",
+            "create State",
+            "create User",
+            "create Amenity",
+            "create City",
+            "create Review",
+            "create Place",
+        ]
+        for prompt in models_list:
+            model = prompt.split()[1].strip()
+            with patch('sys.stdout', new=StringIO()) as console:
+                HBNBCommand().onecmd(f"{model}.count()")
+                count_before = console.getvalue().strip()
+                HBNBCommand().onecmd(f'create {model}')
+            with patch('sys.stdout', new=StringIO()) as console:
+                HBNBCommand().onecmd(f"{model}.count()")
+                count_after = console.getvalue().strip()
+                self.assertEqual(int(count_before) - 1, int(count_after))
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)

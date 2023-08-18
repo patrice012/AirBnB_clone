@@ -1,4 +1,4 @@
-# AirBnB Clone - The Console | ALX SE Program
+#AirBnB Clone - The Console | ALX SE Program
 
 [![HolBnB clone](https://github.com/monoprosito/AirBnB_clone/raw/feature/console/hBnB.png?raw=true)](https://github.com/monoprosito/AirBnB_clone/blob/feature/console/hBnB.png?raw=true)
 
@@ -90,6 +90,18 @@ $ ./console.py
 [User] (70f71c16-962b-48ad-9df8-9203fe23d612) {'created_at': datetime.datetime(2020, 2, 19, 18, 11, 32, 341144), 'id': '70f71c16-962b-48ad-9df8-9203fe23d612', 'updated_at': datetime.datetime(2020, 2, 19, 18, 11, 32, 341161), 'Age': '20'}">
 
 ```
+
+# Part 2: `Web static`
+
+## Work Flow
+```
+Create simple HTML static pages
+Style guide
+Fake contents
+No Javascript
+No data loaded from anything
+```
+
 
 ## Authors
 

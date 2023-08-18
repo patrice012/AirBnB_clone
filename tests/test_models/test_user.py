@@ -36,6 +36,7 @@ class TestUser(unittest.TestCase):
     #         self.assertTrue(hasattr(c, k))
     #         self.assertEqual(type(getattr(c, k, None)), v)
 
+
     def test_unique_id(self):
         """Tests that each id is unique."""
         user2 = User()

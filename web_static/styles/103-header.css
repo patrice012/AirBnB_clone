@@ -1,25 +1,22 @@
-/* Style for the header section */
 header {
     background-color: white;
     background-image: url(../images/logo.png);
     background-position: 20px center;
     background-repeat: no-repeat;
-    color: #333; /* Use a color with sufficient contrast for better readability */
+    color: #333;
     height: 70px;
     width: 100%;
-    border-bottom: 1px solid #CCCCCC; /* Use 'solid' instead of just specifying the color */
-    display: flex; /* Flexbox for better alignment */
-    align-items: center; /* Vertically center content */
-    padding: 0 20px; /* Add some padding for better spacing */
+    border-bottom: 1px solid #CCCCCC;
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
 }
 
-/* Ensure sufficient contrast for text on the header background */
 header h1,
 header a {
     color: #333;
 }
 
-/* Add hover effect for better interactivity */
 header a:hover {
     color: #007bff;
     text-decoration: underline;

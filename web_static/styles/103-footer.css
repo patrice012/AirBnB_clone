@@ -1,9 +1,8 @@
-/* Style for the footer section */
 footer {
-    background-color: #f5f5f5; /* Use a slightly different background color for better contrast */
+    background-color: #f5f5f5;
     height: 60px;
     width: 100%;
-    border-top: 1px solid #CCCCCC; /* Solid border for clarity */
+    border-top: 1px solid #CCCCCC;
     text-align: center;
     position: absolute;
     bottom: 0;

@@ -180,9 +180,9 @@ footer {
       background: url('../images/icon_pets.png') 0% 20% no-repeat;
 }
 
-.tv, 
-.wifi, 
-.pet_friendly {
+.tv_icon, 
+.wifi_icon, 
+.pet_friendly_icon {
     background-size: 25px;
     list-style: none;
 }
@@ -205,12 +205,12 @@ footer {
         color: #FFFFFF;
     }
 
-    .tv_icon,
+/*     .tv_icon,
     .wifi_icon,
     .pet_friendly_icon,
     .max_guest,
     .number_rooms,
     .number_bathrooms {
         background-blend-mode: difference;
-    }
+    } */
 }

@@ -3,6 +3,7 @@ body {
     padding: 0;
     color: #484848;
     font-size: 14px;
+    min-height: 100vh;
     font-family: Circular,"Helvetica Neue",Helvetica,Arial,sans-serif;
 }
 

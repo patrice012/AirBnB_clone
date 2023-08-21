@@ -31,7 +31,7 @@
     width: 25%;
 }
 
-@media screen and (max-width: 980px) {
+@media screen and (max-width: 70rem) {
     .filters button {
         font-size: calc(0.9rem + 8%);
     }
@@ -42,7 +42,7 @@
     }
 }
 
-@media screen and (max-width: 560px) {
+@media screen and (max-width: 40rem) {
     .filters button {
         height: calc(26px + 1.5vw);
     }
@@ -118,7 +118,7 @@
     padding: 0;
 }
 
-@media screen and (max-width: 980px){
+@media screen and (max-width: 70rem){
     .popover h2 {
         font-size: clamp(12px, calc(0.8rem + 2vw), 20px);
     }

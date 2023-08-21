@@ -16,7 +16,7 @@ footer {
     display: inline-block;
 }
 
-@media screen and (max-width: 560px) {
+@media screen and (max-width: 40rem) {
     .places article {
         width: initial;
         padding: calc(5px + 1vw);
@@ -45,7 +45,7 @@ footer {
 }
 
 
-@media screen and (max-width: 980px){
+@media screen and (max-width: 70rem){
     .places h1,
     .places article h2 {
         font-size: clamp(12px, calc(0.8rem + 2vw), 30px);
@@ -66,7 +66,7 @@ footer {
     width: 100%;
 }
 
-@media screen and (max-width: 980px) {
+@media screen and (max-width: 70rem) {
     .place__container {
         flex-direction: column;
         justify-content: center;
@@ -74,7 +74,7 @@ footer {
     }
 }
 
-@media screen and (max-width: 560px) {
+@media screen and (max-width: 40rem) {
     .place__container {
         row-gap: calc(18px + 5vw);
     }
@@ -128,7 +128,7 @@ footer {
     text-align: center;
 }
 
-@media screen and (max-width: 980px) {
+@media screen and (max-width: 70rem) {
     .max_guest,
     .number_rooms,
     .number_bathrooms {
